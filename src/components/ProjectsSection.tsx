@@ -75,7 +75,11 @@ function ProjectCard({
           <div className={`absolute inset-0 bg-gradient-to-br ${project.color} z-10`} />
           <img
             src={project.image}
-            alt={project.title}
+            alt={`${project.title} – ${project.subtitle}`}
+            width={800}
+            height={500}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover opacity-50 group-hover:opacity-70 group-hover:scale-110 transition-all duration-600"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent z-20" />
@@ -175,7 +179,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative">
-          <img src={project.image} alt={project.title} className="w-full h-56 object-cover" />
+          <img src={project.image} alt={`${project.title} – ${project.subtitle}`} width={800} height={500} loading="lazy" decoding="async" className="w-full h-56 object-cover" />
           <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-70`} />
           <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent" />
           <button

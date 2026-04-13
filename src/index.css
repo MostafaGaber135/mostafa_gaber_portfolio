@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
+/* Fonts loaded non-blocking via index.html <link rel="preload"> */
 
 @tailwind base;
 @tailwind components;
@@ -101,6 +101,18 @@ section[id] {
   h1, h2, h3, h4, h5 {
     font-family: 'Space Grotesk', sans-serif;
     letter-spacing: -0.02em;
+  }
+
+  /* Accessible focus ring */
+  :focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Remove outline for mouse users */
+  :focus:not(:focus-visible) {
+    outline: none;
   }
 }
 

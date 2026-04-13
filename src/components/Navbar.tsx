@@ -49,6 +49,7 @@ export default function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
+      aria-label="Main navigation"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "glass-card py-3" : "bg-transparent py-5"}`}
     >
       <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
@@ -93,6 +94,7 @@ export default function Navbar() {
 
           <motion.button
             onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             className="p-2 rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
@@ -124,7 +126,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex md:hidden items-center gap-4">
-          <motion.button onClick={toggleTheme} className="p-2 rounded-full bg-secondary" whileTap={{ scale: 0.9 }}>
+          <motion.button onClick={toggleTheme} aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"} className="p-2 rounded-full bg-secondary" whileTap={{ scale: 0.9 }}>
             {theme === "dark" ? <Sun className="w-5 h-5 text-foreground" /> : <Moon className="w-5 h-5 text-foreground" />}
           </motion.button>
 
@@ -134,6 +136,9 @@ export default function Navbar() {
               e.preventDefault();
               setIsOpen((v) => !v);
             }}
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isOpen}
+            aria-controls="mobile-menu"
             className="text-foreground touch-manipulation"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -147,7 +152,8 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden glass-card mt-2 mx-4 rounded-2xl overflow-hidden"
+            id="mobile-menu"
+          className="md:hidden glass-card mt-2 mx-4 rounded-2xl overflow-hidden"
           >
             <div className="p-4 flex flex-col gap-4">
               {navLinks.map((link) => (
