@@ -10,6 +10,7 @@ import CertificatesSection from "@/components/CertificatesSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
+import { Analytics } from "@vercel/analytics/react";
 
 export default function Index() {
   return (
@@ -46,6 +47,7 @@ export default function Index() {
         <ContactSection />
       </main>
       <Footer />
+      <Analytics />
     </>
   );
 }
