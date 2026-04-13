@@ -34,7 +34,7 @@ export default function Index() {
         <meta property="og:title" content="Mostafa Gaber Ahmed | Frontend Developer" />
         <meta property="og:description" content="Frontend Developer specializing in React, TypeScript, and modern web technologies." />
         <meta property="og:type" content="website" />
-        <link rel="canonical" href="/" />
+        <link rel="canonical" href="https://mostafagaberahmed.site/" />
       </Helmet>
 
       <LoadingScreen />

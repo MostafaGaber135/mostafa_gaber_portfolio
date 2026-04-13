@@ -148,6 +148,7 @@ export default function ContactSection() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={link.label}
                     className="p-3 rounded-xl glass-card hover:bg-primary/10 transition-colors"
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
@@ -155,7 +156,7 @@ export default function ContactSection() {
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ delay: 0.5 + index * 0.1 }}
                   >
-                    <link.icon className="w-5 h-5" />
+                    <link.icon className="w-5 h-5" aria-hidden="true" />
                   </motion.a>
                 ))}
               </div>
