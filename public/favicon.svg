@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7B3FE4"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1030"/>
+      <stop offset="100%" stop-color="#0d0b1e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+
+  <!-- Subtle glow overlay -->
+  <rect width="64" height="64" rx="14" fill="url(#grad)" opacity="0.10"/>
+
+  <!-- Code bracket icon: < / > -->
+  <!-- Left bracket < -->
+  <polyline
+    points="14,22 7,32 14,42"
+    stroke="url(#grad)" stroke-width="4.5"
+    fill="none" stroke-linecap="round" stroke-linejoin="round"
+  />
+  <!-- Right bracket > -->
+  <polyline
+    points="50,22 57,32 50,42"
+    stroke="url(#grad)" stroke-width="4.5"
+    fill="none" stroke-linecap="round" stroke-linejoin="round"
+  />
+  <!-- Slash / -->
+  <line
+    x1="40" y1="20" x2="26" y2="44"
+    stroke="url(#grad)" stroke-width="4"
+    stroke-linecap="round" opacity="0.85"
+  />
+</svg>
