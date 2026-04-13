@@ -5,8 +5,15 @@ export default function LoadingScreen() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 2000);
-    return () => clearTimeout(timer);
+    document.body.style.overflow = "hidden";
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      document.body.style.overflow = "";
+    }, 2000);
+    return () => {
+      clearTimeout(timer);
+      document.body.style.overflow = "";
+    };
   }, []);
 
   return (

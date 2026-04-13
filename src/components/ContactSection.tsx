@@ -79,7 +79,7 @@ export default function ContactSection() {
   }
 
   const contactInfo = [
-    { icon: Mail, label: "Email", value: "support@mostafagaberahmed.site", href: "mailto:support@mostafagaberahmed.site" },
+    { icon: Mail, label: "Email", value: "mostafagaber1234560@gmail.com", href: "mailto:mostafagaber1234560@gmail.com" },
     { icon: Phone, label: "Phone", value: "+20 102 823 7890", href: "tel:+201028237890" },
     { icon: MapPin, label: "Location", value: "Egypt" },
   ];
@@ -87,7 +87,7 @@ export default function ContactSection() {
   const socialLinks = [
     { icon: Github, label: "GitHub", href: "https://github.com/MostafaGaber135" },
     { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/mostafagaber135/" },
-    { icon: Mail, label: "Email", href: "mailto:support@mostafagaberahmed.site" },
+    { icon: Mail, label: "Email", href: "mailto:mostafagaber1234560@gmail.com" },
   ];
 
   return (

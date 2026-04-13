@@ -9,10 +9,12 @@ import ProjectsSection from "@/components/ProjectsSection";
 import CertificatesSection from "@/components/CertificatesSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import ScrollProgressBar from "@/components/ScrollProgressBar";
 
 export default function Index() {
   return (
     <>
+      <ScrollProgressBar />
       <Helmet>
         <title>Mostafa Gaber Ahmed | Frontend Developer</title>
         <meta
