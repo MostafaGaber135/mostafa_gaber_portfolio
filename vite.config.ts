@@ -32,7 +32,6 @@ export default defineConfig(({ mode }) => ({
         manualChunks: {
           "react-core":   ["react", "react-dom"],
           "react-router": ["react-router-dom"],
-          "framer":       ["framer-motion"],
           "radix-ui":     [
             "@radix-ui/react-accordion",
             "@radix-ui/react-dialog",

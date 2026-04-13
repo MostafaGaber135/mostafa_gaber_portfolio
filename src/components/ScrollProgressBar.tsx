@@ -1,26 +1,35 @@
-import { motion, useScroll, useSpring } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function ScrollProgressBar() {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
-  // Hide during loading screen (LoadingScreen takes 2000ms + 500ms exit)
+  const barRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    // Hide during loading screen
     const t = setTimeout(() => setVisible(true), 2600);
     return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => {
+      if (!barRef.current) return;
+      const scrolled = window.scrollY;
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      if (total <= 0) return;
+      barRef.current.style.transform = `scaleX(${scrolled / total})`;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   if (!visible) return null;
 
   return (
-    <motion.div
+    <div
+      ref={barRef}
       className="scroll-progress"
-      style={{ scaleX }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
+      style={{ transform: "scaleX(0)" }}
+      aria-hidden="true"
     />
   );
 }
