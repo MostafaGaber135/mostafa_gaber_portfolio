@@ -11,7 +11,7 @@ const projects = [
       "A TypeScript-first React application for browsing and searching 1,000+ real-time news articles via the GNews API, with debounced search and category-based filtering. Features a secure API proxy layer using Vercel serverless functions to protect API keys from client-side exposure.",
     technologies: ["React", "TypeScript", "Tailwind CSS", "Vercel Serverless", "GNews API", "React.memo"],
     github: "https://github.com/MostafaGaber135/Veritas",
-    live: "https://veritas-news-app.vercel.app/",
+    live: "https://veritas-opal.vercel.app/",
     image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&h=500&fit=crop",
     color: "from-violet-500/20 to-indigo-500/20",
     highlights: ["1,000+ real-time articles", "Secure API proxy layer", "Debounced search & filtering"],
