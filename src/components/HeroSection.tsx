@@ -23,13 +23,12 @@ function AnimatedHeading() {
   const line2 = ["Mostafa", "Gaber"];
 
   const wordVariants = {
-    hidden: { opacity: 0, y: 40, filter: "blur(8px)" },
+    hidden: { opacity: 0, y: 36 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      filter: "blur(0px)",
       transition: {
-        duration: 0.75,
+        duration: 0.7,
         delay: 0.18 + i * 0.13,
         ease: [0.22, 1, 0.36, 1],
       },

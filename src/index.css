@@ -180,11 +180,13 @@ section[id] {
   .skill-bar-fill::after {
     content: '';
     position: absolute;
-    top: 0; left: -100%;
+    top: 0; left: 0;
     width: 60%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transform: translateX(-200%);
     animation: shimmer 2.5s ease-in-out 1.2s forwards;
+    will-change: transform;
   }
 }
 
@@ -219,8 +221,8 @@ section[id] {
   }
 
   @keyframes shimmer {
-    0%   { left: -100%; opacity: 1; }
-    100% { left: 200%; opacity: 0; }
+    0%   { transform: translateX(-200%); opacity: 1; }
+    100% { transform: translateX(400%);  opacity: 0; }
   }
 
   @keyframes pulse-ring {
