@@ -7,7 +7,7 @@ export default function LoadingScreen() {
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
-    const t1 = setTimeout(() => setFading(true), 1800);
+    const t1 = setTimeout(() => setFading(true), 800);
     const t2 = setTimeout(() => {
       setVisible(false);
       document.body.style.overflow = "";
@@ -15,7 +15,7 @@ export default function LoadingScreen() {
       // Remove the static HTML splash from DOM so it never blocks clicks.
       const splash = document.getElementById("splash");
       if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
-    }, 2300);
+    }, 1200);
 
     return () => {
       clearTimeout(t1);

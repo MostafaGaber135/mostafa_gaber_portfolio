@@ -131,6 +131,7 @@ function ProjectCard({
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={`${project.title} source code on GitHub`}
               className="inline-flex items-center gap-1.5 font-display text-xs uppercase tracking-wider hover:text-primary transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
@@ -141,6 +142,7 @@ function ProjectCard({
                 href={project.live}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`${project.title} live demo`}
                 className="inline-flex items-center gap-1.5 font-display text-xs uppercase tracking-wider hover:text-primary transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >

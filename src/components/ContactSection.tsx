@@ -149,7 +149,7 @@ export default function ContactSection() {
             </div>
 
             <div className="bold-card p-5 sm:p-6 bg-foreground text-background">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-3">
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] mb-3" style={{ color: 'hsl(202 100% 65%)' }}>
                 // CONNECT
               </p>
               <div className="flex gap-2">

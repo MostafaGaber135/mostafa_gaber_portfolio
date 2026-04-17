@@ -41,7 +41,7 @@ export default function AboutSection() {
             {/* Bio */}
             <motion.div variants={itemVariants} className="space-y-6">
               <div className="bold-card p-6 sm:p-8 bg-foreground text-background">
-                <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary mb-3">// THE STORY</p>
+                <p className="font-mono text-xs uppercase tracking-[0.3em] mb-3" style={{ color: 'hsl(202 100% 65%)' }}>// THE STORY</p>
                 <p className="text-lg sm:text-xl leading-relaxed font-medium">
                   Frontend developer obsessed with building <span className="bg-primary text-primary-foreground px-1.5 font-black">responsive</span>,{" "}
                   well-structured web applications. I write{" "}

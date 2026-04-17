@@ -42,6 +42,7 @@ export default defineConfig(({ mode }) => ({
             "@radix-ui/react-tooltip",
           ],
           "emailjs":      ["@emailjs/browser"],
+          "framer":       ["framer-motion"],
         },
       },
     },

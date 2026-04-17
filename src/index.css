@@ -23,14 +23,14 @@ section[id] {
     --primary: 202 100% 33%;          /* #0070B3 — AA on white */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 156 100% 27%;        /* #008A5B — AA when paired with black text */
-    --secondary-foreground: 0 0% 7%;  /* black on green = 6.4:1 */
+    --secondary: 156 100% 22%;        /* #006E48 — 5.8:1 ratio on white bg */
+    --secondary-foreground: 0 0% 100%; /* white on dark green = 5.8:1 ✓ AA */
 
     --surface: 0 0% 7%;               /* #111111 */
     --surface-foreground: 0 0% 100%;
 
     --muted: 0 0% 94%;
-    --muted-foreground: 0 0% 27%;     /* AA on muted/background */
+    --muted-foreground: 0 0% 20%;     /* AA on muted/background — 8.8:1 on white */
 
     --accent: 202 100% 33%;
     --accent-foreground: 0 0% 100%;
@@ -49,7 +49,7 @@ section[id] {
     --shadow-sharp: 6px 6px 0 0 hsl(0 0% 7%);
     --shadow-sharp-lg: 10px 10px 0 0 hsl(0 0% 7%);
     --shadow-sharp-primary: 6px 6px 0 0 hsl(202 100% 33%);
-    --shadow-sharp-secondary: 6px 6px 0 0 hsl(156 100% 27%);
+    --shadow-sharp-secondary: 6px 6px 0 0 hsl(156 100% 22%);
   }
 
   .dark {
@@ -65,7 +65,7 @@ section[id] {
     --primary: 202 100% 50%;
     --primary-foreground: 0 0% 5%;
 
-    --secondary: 156 100% 40%;
+    --secondary: 156 100% 38%;
     --secondary-foreground: 0 0% 5%;
 
     --surface: 0 0% 100%;
@@ -89,7 +89,7 @@ section[id] {
     --shadow-sharp: 6px 6px 0 0 hsl(0 0% 100%);
     --shadow-sharp-lg: 10px 10px 0 0 hsl(0 0% 100%);
     --shadow-sharp-primary: 6px 6px 0 0 hsl(202 100% 50%);
-    --shadow-sharp-secondary: 6px 6px 0 0 hsl(156 100% 40%);
+    --shadow-sharp-secondary: 6px 6px 0 0 hsl(156 100% 38%);
   }
 }
 

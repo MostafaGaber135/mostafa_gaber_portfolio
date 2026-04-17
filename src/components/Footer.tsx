@@ -11,11 +11,11 @@ export default function Footer() {
       <div className="container mx-auto px-4 md:px-8 py-16 md:py-20">
         <div className="grid md:grid-cols-[1fr_auto] gap-10 items-end">
           <div>
-            <p className="font-mono text-xs uppercase tracking-[0.3em] text-primary mb-4">
+            <p className="font-mono text-xs uppercase tracking-[0.3em] mb-4" style={{ color: 'hsl(202 100% 65%)' }}>
               // LET&apos;S BUILD
             </p>
             <h2 className="font-display text-5xl sm:text-6xl md:text-7xl leading-none mb-6">
-              GOT A <span className="text-primary">BOLD</span> <br />
+              GOT A <span style={{ color: 'hsl(202 100% 65%)' }}>BOLD</span> <br />
               IDEA?
             </h2>
             <a
