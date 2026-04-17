@@ -43,10 +43,10 @@ function SkillBar({ name, level, delay }: { name: string; level: number; delay: 
   const isInView = useInView(ref, { once: true, margin: "-40px" });
 
   return (
-    <div ref={ref} className="space-y-1.5">
+    <div ref={ref} className="space-y-2">
       <div className="flex justify-between items-center gap-3">
-        <span className="text-sm font-medium truncate">{name}</span>
-        <span className="text-xs text-muted-foreground shrink-0 font-semibold">{level}%</span>
+        <span className="text-sm font-black uppercase tracking-wider truncate">{name}</span>
+        <span className="font-mono text-xs font-bold shrink-0">{level}%</span>
       </div>
       <div className="skill-bar">
         <motion.div
@@ -66,7 +66,7 @@ export default function SkillsSection() {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
@@ -75,20 +75,23 @@ export default function SkillsSection() {
   };
 
   return (
-    <section id="skills" className="section-padding" ref={ref}>
-      <div className="container mx-auto px-4 sm:px-6 md:px-8">
+    <section id="skills" className="section-padding relative overflow-hidden" ref={ref}>
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 relative">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-10 sm:mb-14"
+          className="mb-12 sm:mb-16"
         >
-          <span className="text-primary font-medium text-xs sm:text-sm uppercase tracking-wider">
-            What I can do
+          <span className="eyebrow bg-secondary text-secondary-foreground">
+            <span className="font-mono">02 //</span> Arsenal
           </span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mt-2">Skills & Expertise</h2>
-          <p className="text-muted-foreground text-sm sm:text-base mt-3 max-w-xl mx-auto">
-            Technologies and tools I use to build modern, production-ready web applications.
+          <h2 className="font-display text-super mt-4">
+            TOOLS I USE TO <br />
+            <span className="text-primary">SHIP THINGS.</span>
+          </h2>
+          <p className="text-base sm:text-lg font-medium mt-4 max-w-2xl">
+            A focused, production-ready stack for building modern web applications.
           </p>
         </motion.div>
 
@@ -96,78 +99,78 @@ export default function SkillsSection() {
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto"
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 max-w-6xl mx-auto"
         >
           {/* Core & Frameworks */}
-          <motion.div variants={itemVariants} className="glass-card p-5 sm:p-6">
-            <h3 className="text-sm sm:text-base font-bold mb-5 flex items-center gap-2 uppercase tracking-wide text-muted-foreground">
-              <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
-              Core & Frameworks
-            </h3>
+          <motion.div variants={itemVariants} className="bold-card p-6 sm:p-7">
+            <div className="flex items-center justify-between mb-5 pb-4 border-b-[3px] border-foreground">
+              <h3 className="font-display text-xl">CORE</h3>
+              <span className="tag-chip tag-chip-primary">FRAMEWORKS</span>
+            </div>
             <div className="space-y-4">
               {coreSkills.map((skill, index) => (
-                <SkillBar key={skill.name} name={skill.name} level={skill.level} delay={index * 0.08} />
+                <SkillBar key={skill.name} name={skill.name} level={skill.level} delay={index * 0.06} />
               ))}
             </div>
           </motion.div>
 
-          {/* UI & Styling */}
-          <motion.div variants={itemVariants} className="glass-card p-5 sm:p-6">
-            <h3 className="text-sm sm:text-base font-bold mb-5 flex items-center gap-2 uppercase tracking-wide text-muted-foreground">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 shrink-0" />
-              UI & Styling
-            </h3>
-            <div className="space-y-4 mb-8">
+          {/* UI & Styling + Soft */}
+          <motion.div variants={itemVariants} className="bold-card p-6 sm:p-7 bg-foreground text-background">
+            <div className="flex items-center justify-between mb-5 pb-4 border-b-[3px] border-background">
+              <h3 className="font-display text-xl text-primary">UI</h3>
+              <span className="tag-chip tag-chip-secondary">STYLING</span>
+            </div>
+            <div className="space-y-4 mb-7">
               {uiSkills.map((skill, index) => (
-                <SkillBar key={skill.name} name={skill.name} level={skill.level} delay={index * 0.08} />
+                <SkillBar key={skill.name} name={skill.name} level={skill.level} delay={index * 0.06} />
               ))}
             </div>
 
-            <h3 className="text-sm sm:text-base font-bold mb-4 flex items-center gap-2 uppercase tracking-wide text-muted-foreground">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
-              Soft Skills
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {softSkills.map((skill, index) => (
-                <motion.span
-                  key={skill}
-                  className="px-3 py-1.5 bg-secondary rounded-full text-xs font-medium hover:bg-primary/10 hover:text-primary transition-colors cursor-default"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ delay: 0.4 + index * 0.07 }}
-                  whileHover={{ scale: 1.07 }}
-                >
-                  {skill}
-                </motion.span>
-              ))}
+            <div className="pt-5 border-t-[3px] border-background">
+              <h4 className="font-mono text-xs uppercase tracking-[0.3em] mb-3 opacity-80">
+                // SOFT SKILLS
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {softSkills.map((skill, index) => (
+                  <motion.span
+                    key={skill}
+                    className="tag-chip border-background bg-transparent text-background hover:bg-background hover:text-foreground transition-colors cursor-default"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                    transition={{ delay: 0.4 + index * 0.05 }}
+                  >
+                    {skill}
+                  </motion.span>
+                ))}
+              </div>
             </div>
           </motion.div>
 
-          {/* Tools & Backend */}
-          <motion.div variants={itemVariants} className="glass-card p-5 sm:p-6">
-            <h3 className="text-sm sm:text-base font-bold mb-5 flex items-center gap-2 uppercase tracking-wide text-muted-foreground">
-              <span className="w-2 h-2 rounded-full bg-violet-400 shrink-0" />
-              Tools & Backend
-            </h3>
-            <div className="space-y-4 mb-8">
+          {/* Tools & Languages */}
+          <motion.div variants={itemVariants} className="bold-card p-6 sm:p-7">
+            <div className="flex items-center justify-between mb-5 pb-4 border-b-[3px] border-foreground">
+              <h3 className="font-display text-xl">TOOLS</h3>
+              <span className="tag-chip tag-chip-surface">BACKEND</span>
+            </div>
+            <div className="space-y-4 mb-7">
               {toolsSkills.map((skill, index) => (
-                <SkillBar key={skill.name} name={skill.name} level={skill.level} delay={index * 0.08} />
+                <SkillBar key={skill.name} name={skill.name} level={skill.level} delay={index * 0.06} />
               ))}
             </div>
 
-            <div className="pt-2 border-t border-border/50">
-              <h4 className="text-xs font-bold mb-3 text-muted-foreground uppercase tracking-wide">
-                Languages
+            <div className="pt-5 border-t-[3px] border-foreground">
+              <h4 className="font-mono text-xs uppercase tracking-[0.3em] mb-3 text-muted-foreground">
+                // LANGUAGES
               </h4>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {[
-                  { lang: "Arabic", level: "Native", width: 100 },
-                  { lang: "English", level: "B2 – Upper Intermediate", width: 70 },
+                  { lang: "Arabic", level: "NATIVE", width: 100 },
+                  { lang: "English", level: "B2 UPPER-INT", width: 70 },
                 ].map(({ lang, level, width }) => (
                   <div key={lang}>
-                    <div className="flex justify-between text-sm gap-3 mb-1">
-                      <span className="font-medium">{lang}</span>
-                      <span className="text-primary text-xs shrink-0">{level}</span>
+                    <div className="flex justify-between gap-3 mb-1.5 items-center">
+                      <span className="font-black uppercase tracking-wider text-sm">{lang}</span>
+                      <span className="font-mono text-xs font-bold text-primary shrink-0">{level}</span>
                     </div>
                     <div className="skill-bar">
                       <motion.div
@@ -175,6 +178,7 @@ export default function SkillsSection() {
                         initial={{ width: 0 }}
                         animate={isInView ? { width: `${width}%` } : { width: 0 }}
                         transition={{ duration: 1.1, delay: 0.5, ease: "easeOut" }}
+                        style={{ background: "hsl(var(--secondary))" }}
                       />
                     </div>
                   </div>

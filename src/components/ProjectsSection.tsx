@@ -1,6 +1,6 @@
 import { motion, useInView, AnimatePresence } from "framer-motion";
-import { useRef, useState } from "react";
-import { Github, ExternalLink, X, ArrowRight } from "lucide-react";
+import { useRef, useState, useEffect } from "react";
+import { Github, ExternalLink, X, ArrowUpRight } from "lucide-react";
 import { Button } from "./ui/button";
 
 const projects = [
@@ -13,7 +13,7 @@ const projects = [
     github: "https://github.com/MostafaGaber135/Veritas",
     live: "https://veritas-opal.vercel.app/",
     image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&h=500&fit=crop",
-    color: "from-violet-500/20 to-indigo-500/20",
+    accent: "primary",
     highlights: ["1,000+ real-time articles", "Secure API proxy layer", "Debounced search & filtering"],
   },
   {
@@ -25,7 +25,7 @@ const projects = [
     github: "https://github.com/MostafaGaber135/CodeMap",
     live: "https://code-map-psi.vercel.app/",
     image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=500&fit=crop",
-    color: "from-blue-500/20 to-cyan-500/20",
+    accent: "secondary",
     highlights: ["20+ learning roadmaps", "Arabic & English support", "SSG for fast loads"],
   },
   {
@@ -37,12 +37,18 @@ const projects = [
     github: "https://github.com/MostafaGaber135/MovieFlix.git",
     live: "https://movie-flix-bice-pi.vercel.app/",
     image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&h=500&fit=crop",
-    color: "from-red-500/20 to-orange-500/20",
+    accent: "surface",
     highlights: ["500+ movies via TMDb API", "Favorites with localStorage", "3 responsive breakpoints"],
   },
 ];
 
 type Project = (typeof projects)[0];
+
+const accentClasses: Record<string, string> = {
+  primary:   "bg-primary text-primary-foreground",
+  secondary: "bg-secondary text-secondary-foreground",
+  surface:   "bg-foreground text-background",
+};
 
 function ProjectCard({
   project,
@@ -61,18 +67,21 @@ function ProjectCard({
       ref={ref}
       initial={{ opacity: 0, y: 60 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.65, delay: index * 0.12, ease: "easeOut" }}
+      transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
       className="group cursor-pointer h-full"
       onClick={onClick}
     >
-      <motion.div
-        className="glass-card overflow-hidden h-full flex flex-col"
-        whileHover={{ y: -8, boxShadow: "0 20px 50px rgba(8,145,178,0.15)" }}
-        transition={{ duration: 0.3 }}
-      >
+      <div className="bold-card bold-card-hover overflow-hidden h-full flex flex-col">
+        {/* Accent header */}
+        <div className={`${accentClasses[project.accent]} px-5 py-3 flex items-center justify-between border-b-[3px] border-foreground`}>
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] font-black">
+            // PROJECT {String(index + 1).padStart(2, "0")}
+          </span>
+          <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+        </div>
+
         {/* Image */}
-        <div className="relative h-48 overflow-hidden shrink-0">
-          <div className={`absolute inset-0 bg-gradient-to-br ${project.color} z-10`} />
+        <div className="relative h-48 overflow-hidden shrink-0 bg-muted border-b-[3px] border-foreground">
           <img
             src={project.image.replace("w=800&h=500", "w=600&h=375")}
             srcSet={`${project.image.replace("w=800&h=500", "w=400&h=250")} 400w, ${project.image.replace("w=800&h=500", "w=600&h=375")} 600w, ${project.image} 800w`}
@@ -82,105 +91,99 @@ function ProjectCard({
             height={375}
             loading="lazy"
             decoding="async"
-            className="w-full h-full object-cover opacity-50 group-hover:opacity-70 group-hover:scale-110 transition-all duration-600"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            style={{ filter: "contrast(1.05) saturate(1.1)" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent z-20" />
-          {/* Overlay hint */}
-          <div className="absolute inset-0 z-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <span className="bg-background/80 backdrop-blur-sm text-sm font-medium px-4 py-2 rounded-full border border-border">
-              View Details
-            </span>
-          </div>
         </div>
 
+        {/* Content */}
         <div className="p-5 sm:p-6 flex flex-col flex-1">
-          <div className="mb-3">
-            <h3 className="text-lg sm:text-xl font-bold group-hover:text-primary transition-colors">
-              {project.title}
-            </h3>
-            <p className="text-xs text-muted-foreground mt-0.5 font-medium">{project.subtitle}</p>
-          </div>
+          <h3 className="font-display text-2xl sm:text-3xl leading-none group-hover:text-primary transition-colors">
+            {project.title.toUpperCase()}.
+          </h3>
+          <p className="text-xs font-black uppercase tracking-wider mt-1.5 text-muted-foreground">{project.subtitle}</p>
 
-          <p className="text-sm text-muted-foreground mb-4 line-clamp-2 flex-1">
-            {project.description}
-          </p>
+          <p className="text-sm font-medium leading-relaxed mt-3 line-clamp-2 flex-1">{project.description}</p>
 
           {/* Highlights */}
-          <div className="flex flex-col gap-1 mb-4">
+          <ul className="flex flex-col gap-1.5 mt-4">
             {project.highlights.map((h) => (
-              <div key={h} className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+              <li key={h} className="flex items-start gap-2 text-xs font-bold">
+                <span className="w-2 h-2 bg-primary border-[2px] border-foreground shrink-0 mt-1" />
                 {h}
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
 
           {/* Tech tags */}
-          <div className="flex flex-wrap gap-1.5 mb-4">
+          <div className="flex flex-wrap gap-1.5 mt-4">
             {project.technologies.slice(0, 3).map((tech) => (
-              <span key={tech} className="px-2 py-1 bg-secondary text-xs rounded font-medium">
-                {tech}
-              </span>
+              <span key={tech} className="tag-chip">{tech}</span>
             ))}
             {project.technologies.length > 3 && (
-              <span className="px-2 py-1 bg-primary/10 text-primary text-xs rounded font-medium">
-                +{project.technologies.length - 3} more
-              </span>
+              <span className="tag-chip tag-chip-primary">+{project.technologies.length - 3}</span>
             )}
           </div>
 
           {/* Links */}
-          <div className="flex gap-4 items-center mt-auto pt-2 border-t border-border/50">
+          <div className="flex gap-4 items-center mt-5 pt-4 border-t-[3px] border-foreground">
             <a
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+              className="inline-flex items-center gap-1.5 font-display text-xs uppercase tracking-wider hover:text-primary transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
-              <Github className="w-4 h-4" />
-              Code
+              <Github className="w-4 h-4" /> CODE
             </a>
             {project.live && (
               <a
                 href={project.live}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
+                className="inline-flex items-center gap-1.5 font-display text-xs uppercase tracking-wider hover:text-primary transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >
-                <ExternalLink className="w-4 h-4" />
-                Live Demo
+                <ExternalLink className="w-4 h-4" /> LIVE
               </a>
             )}
-            <span className="ml-auto text-xs text-primary flex items-center gap-1 group-hover:gap-2 transition-all">
-              Details <ArrowRight className="w-3 h-3" />
+            <span className="ml-auto font-mono text-[10px] uppercase tracking-wider text-primary group-hover:underline decoration-[3px] underline-offset-4">
+              CLICK TO EXPAND →
             </span>
           </div>
         </div>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }
 
 function ProjectModal({ project, onClose }: { project: Project; onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-md"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/80 backdrop-blur-sm"
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="project-modal-title"
     >
       <motion.div
         initial={{ scale: 0.88, opacity: 0, y: 30 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.88, opacity: 0, y: 30 }}
-        transition={{ duration: 0.35, ease: "easeOut" }}
-        className="glass-card max-w-2xl w-full max-h-[90vh] overflow-auto"
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="bold-card bg-background max-w-2xl w-full max-h-[90vh] overflow-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="relative">
+        <div className={`relative ${accentClasses[project.accent]} border-b-[3px] border-foreground`}>
           <img
             src={project.image.replace("w=800&h=500", "w=600&h=375")}
             srcSet={`${project.image.replace("w=800&h=500", "w=400&h=250")} 400w, ${project.image.replace("w=800&h=500", "w=600&h=375")} 600w, ${project.image} 800w`}
@@ -190,33 +193,35 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
             height={375}
             loading="lazy"
             decoding="async"
-            className="w-full h-56 object-cover"
+            className="w-full h-56 object-cover mix-blend-multiply opacity-80"
           />
-          <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-70`} />
-          <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent" />
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full bg-background/60 backdrop-blur-sm hover:bg-background/90 transition-colors z-10"
+            aria-label="Close modal"
+            className="absolute top-4 right-4 w-11 h-11 bg-background border-[3px] border-foreground flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors active:translate-x-[2px] active:translate-y-[2px]"
           >
             <X className="w-5 h-5" />
           </button>
-          <div className="absolute bottom-4 left-6 z-10">
-            <h3 className="text-2xl font-bold text-white">{project.title}</h3>
-            <p className="text-white/80 text-sm">{project.subtitle}</p>
+          <div className="absolute bottom-4 left-6 right-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] mb-1 opacity-90">// CASE STUDY</p>
+            <h3 id="project-modal-title" className="font-display text-3xl sm:text-4xl leading-none">
+              {project.title.toUpperCase()}.
+            </h3>
+            <p className="text-xs font-bold uppercase tracking-wider mt-1 opacity-90">{project.subtitle}</p>
           </div>
         </div>
 
         <div className="p-6">
-          <p className="text-muted-foreground mb-6 leading-relaxed">{project.description}</p>
+          <p className="font-medium leading-relaxed mb-6">{project.description}</p>
 
           <div className="mb-6">
-            <h4 className="text-sm font-bold mb-3 text-muted-foreground uppercase tracking-wider">
-              Key Highlights
+            <h4 className="font-mono text-xs uppercase tracking-[0.3em] mb-3 text-muted-foreground">
+              // KEY HIGHLIGHTS
             </h4>
             <ul className="space-y-2">
               {project.highlights.map((h) => (
-                <li key={h} className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
+                <li key={h} className="flex items-center gap-2 text-sm font-bold">
+                  <span className="w-2.5 h-2.5 bg-primary border-[2px] border-foreground shrink-0" />
                   {h}
                 </li>
               ))}
@@ -224,27 +229,25 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
           </div>
 
           <div className="mb-6">
-            <h4 className="text-sm font-bold mb-3 text-muted-foreground uppercase tracking-wider">
-              Technologies
+            <h4 className="font-mono text-xs uppercase tracking-[0.3em] mb-3 text-muted-foreground">
+              // STACK
             </h4>
             <div className="flex flex-wrap gap-2">
               {project.technologies.map((tech) => (
-                <span key={tech} className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full font-medium">
-                  {tech}
-                </span>
+                <span key={tech} className="tag-chip tag-chip-primary">{tech}</span>
               ))}
             </div>
           </div>
 
-          <div className="flex gap-4">
-            <Button asChild>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button asChild variant="outline">
               <a href={project.github} target="_blank" rel="noopener noreferrer">
                 <Github className="w-4 h-4 mr-2" />
                 View Code
               </a>
             </Button>
             {project.live && (
-              <Button variant="outline" asChild>
+              <Button asChild>
                 <a href={project.live} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="w-4 h-4 mr-2" />
                   Live Demo
@@ -270,18 +273,23 @@ export default function ProjectsSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-14 sm:mb-16"
+          className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 sm:mb-16"
         >
-          <span className="text-primary font-medium text-xs sm:text-sm uppercase tracking-wider">
-            My Work
-          </span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mt-2">Featured Projects</h2>
-          <p className="text-muted-foreground text-sm sm:text-base mt-3 max-w-xl mx-auto">
-            Real-world applications built with modern technologies and attention to detail.
+          <div>
+            <span className="eyebrow bg-primary text-primary-foreground">
+              <span className="font-mono">04 //</span> Selected Work
+            </span>
+            <h2 className="font-display text-super mt-4">
+              FEATURED <br />
+              <span className="text-stroke">PROJECTS.</span>
+            </h2>
+          </div>
+          <p className="text-base sm:text-lg font-medium max-w-md">
+            Real-world applications built with modern technologies, obsessive attention to detail, and a bias for shipping.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 max-w-6xl mx-auto">
           {projects.map((project, index) => (
             <ProjectCard
               key={project.title}
@@ -295,13 +303,13 @@ export default function ProjectsSection() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
-          transition={{ delay: 0.9 }}
-          className="text-center mt-12"
+          transition={{ delay: 0.8 }}
+          className="text-center mt-14"
         >
-          <Button variant="outline" size="lg" asChild className="border-primary/40 hover:bg-primary/10">
+          <Button variant="surface" size="lg" asChild>
             <a href="https://github.com/MostafaGaber135" target="_blank" rel="noopener noreferrer">
-              <Github className="w-4 h-4 mr-2" />
-              View All Projects on GitHub
+              <Github className="w-5 h-5 mr-2" />
+              See everything on GitHub
             </a>
           </Button>
         </motion.div>

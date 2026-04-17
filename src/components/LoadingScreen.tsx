@@ -6,11 +6,17 @@ export default function LoadingScreen() {
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    const t1 = setTimeout(() => setFading(true), 2000);
+
+    const t1 = setTimeout(() => setFading(true), 1800);
     const t2 = setTimeout(() => {
       setVisible(false);
       document.body.style.overflow = "";
-    }, 2500);
+
+      // Remove the static HTML splash from DOM so it never blocks clicks.
+      const splash = document.getElementById("splash");
+      if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+    }, 2300);
+
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -31,28 +37,36 @@ export default function LoadingScreen() {
       aria-label="Loading"
       role="status"
     >
-      <div className="text-center">
-        {/* Logo */}
+      <div className="bg-grid-bold absolute inset-0 opacity-40" aria-hidden="true" />
+
+      <div className="relative text-center">
         <div
-          className="text-4xl md:text-5xl font-bold gradient-text mb-4 animate-fade-up"
+          className="inline-flex items-center justify-center w-28 h-28 md:w-36 md:h-36 bg-primary text-primary-foreground border-[4px] border-foreground font-display text-5xl md:text-6xl shadow-bold-lg animate-scale-in"
           style={{ animationDuration: "0.5s" }}
         >
           MGA
         </div>
 
-        {/* Dots */}
         <div
-          className="flex items-center justify-center gap-1 animate-fade-in"
+          className="mt-6 flex items-center justify-center gap-1 animate-fade-in"
           style={{ animationDelay: "0.3s", animationDuration: "0.4s" }}
+          aria-hidden="true"
         >
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="w-2 h-2 rounded-full bg-primary animate-bounce"
+              className="w-3 h-3 bg-foreground animate-bounce"
               style={{ animationDelay: `${i * 0.15}s` }}
             />
           ))}
         </div>
+
+        <p
+          className="font-mono text-xs uppercase tracking-[0.4em] mt-5 animate-fade-in"
+          style={{ animationDelay: "0.4s" }}
+        >
+          LOADING PORTFOLIO
+        </p>
       </div>
     </div>
   );

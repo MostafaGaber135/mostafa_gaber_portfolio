@@ -75,99 +75,88 @@ const activities = [
 function ExperienceCard({
   exp,
   index,
-  isLeft,
 }: {
   exp: (typeof experiences)[0];
   index: number;
-  isLeft: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-60px" });
+
+  const accent = exp.current ? "bg-secondary text-secondary-foreground" : "bg-primary text-primary-foreground";
+
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, x: isLeft ? -60 : 60 }}
-      animate={isInView ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.65, delay: index * 0.12, ease: "easeOut" }}
-      className={`relative flex items-start mb-10 sm:mb-12 ${
-        isLeft ? "md:flex-row" : "md:flex-row-reverse"
-      }`}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.55, delay: index * 0.08, ease: "easeOut" }}
+      className="grid md:grid-cols-[140px_1fr] gap-4 md:gap-8 mb-6"
     >
-      {/* Timeline dot */}
-      <div className="absolute left-0 md:left-1/2 top-6 transform md:-translate-x-1/2 z-10">
-        <motion.div
-          className={`w-4 h-4 rounded-full border-2 border-background ${
-            exp.current ? "bg-emerald-400" : "bg-primary"
-          } glow-effect`}
-          animate={exp.current ? { scale: [1, 1.3, 1] } : {}}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
+      {/* Index + period */}
+      <div className="flex md:flex-col gap-3 md:gap-2 items-center md:items-start md:pt-1">
+        <div className={`w-14 h-14 md:w-20 md:h-20 ${accent} border-[3px] border-foreground flex items-center justify-center font-display text-xl md:text-3xl shadow-bold`}>
+          {String(index + 1).padStart(2, "0")}
+        </div>
+        <div className="flex-1 md:flex-initial">
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">PERIOD</p>
+          <p className="font-black text-sm">{exp.period}</p>
+        </div>
       </div>
 
       {/* Card */}
-      <div className={`ml-8 md:ml-0 md:w-[46%] ${isLeft ? "md:mr-auto md:pr-8" : "md:ml-auto md:pl-8"}`}>
-        <motion.div
-          className="glass-card p-5 sm:p-6"
-          whileHover={{ y: -4, boxShadow: "0 16px 40px rgba(8,145,178,0.12)" }}
-          transition={{ duration: 0.25 }}
-        >
-          {/* Header */}
-          <div className="flex items-start justify-between gap-3 mb-3">
-            <div className="flex flex-wrap gap-2">
-              <span
-                className={`px-2.5 py-1 text-xs font-semibold rounded-full ${
-                  exp.current
-                    ? "bg-emerald-400/15 text-emerald-400 border border-emerald-400/30"
-                    : exp.type === "Full-Time"
-                    ? "bg-primary/15 text-primary border border-primary/30"
-                    : "bg-secondary text-muted-foreground"
-                }`}
-              >
-                {exp.current ? "● Current" : exp.type}
+      <div className="bold-card bold-card-hover p-5 sm:p-7">
+        {/* Header */}
+        <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+          <div>
+            <div className="flex flex-wrap gap-2 mb-2">
+              <span className={`tag-chip ${exp.current ? "tag-chip-secondary" : "tag-chip-primary"}`}>
+                {exp.current && <span className="w-1.5 h-1.5 bg-current animate-pulse mr-1" />}
+                {exp.current ? "CURRENT" : exp.type.toUpperCase()}
+              </span>
+              <span className="tag-chip">
+                <MapPin className="w-3 h-3 mr-1" />
+                {exp.location.toUpperCase()}
               </span>
             </div>
+            <h3 className="font-display text-xl sm:text-2xl leading-tight">{exp.title}</h3>
+            <p className="font-display text-base sm:text-lg text-primary mt-0.5">@ {exp.company}</p>
           </div>
-
-          <h3 className="text-base sm:text-lg font-bold leading-snug">{exp.title}</h3>
-          <p className="text-primary font-semibold text-sm mt-0.5">{exp.company}</p>
-
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground mt-2">
-            <span className="flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5" />
-              {exp.period}
-            </span>
-            <span className="flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5" />
-              {exp.location}
-            </span>
+          <div className="flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-muted-foreground shrink-0">
+            <Calendar className="w-4 h-4" />
+            {exp.period}
           </div>
+        </div>
 
-          <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{exp.description}</p>
+        <p className="text-sm sm:text-base font-medium leading-relaxed mt-3">{exp.description}</p>
 
-          {/* Tech tags */}
-          <div className="flex flex-wrap gap-1.5 mt-4">
-            {exp.technologies.map((tech) => (
-              <span key={tech} className="px-2 py-0.5 bg-secondary text-xs rounded font-medium">
-                {tech}
-              </span>
-            ))}
-          </div>
+        {/* Bullets */}
+        <ul className="mt-4 space-y-2">
+          {exp.bullets.map((b) => (
+            <li key={b} className="flex items-start gap-3 text-sm font-medium leading-relaxed">
+              <span className="w-3 h-3 bg-primary border-[2px] border-foreground shrink-0 mt-1.5" />
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
 
-          {/* Actions */}
-          {exp.link && (
-            <div className="flex items-center gap-3 mt-4">
-              <a
-                href={exp.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 text-xs text-primary hover:underline"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                Visit Site
-              </a>
-            </div>
-          )}
-        </motion.div>
+        {/* Tech tags */}
+        <div className="flex flex-wrap gap-1.5 mt-5 pt-4 border-t-[2px] border-foreground">
+          {exp.technologies.map((tech) => (
+            <span key={tech} className="tag-chip">{tech}</span>
+          ))}
+        </div>
+
+        {exp.link && (
+          <a
+            href={exp.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 mt-4 font-display text-sm uppercase tracking-wider underline decoration-[3px] decoration-primary underline-offset-4 hover:decoration-secondary transition-colors"
+          >
+            <ExternalLink className="w-4 h-4" />
+            Visit Site
+          </a>
+        )}
       </div>
     </motion.div>
   );
@@ -178,72 +167,59 @@ export default function ExperienceSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section id="experience" className="section-padding bg-secondary/30" ref={ref}>
-      <div className="container mx-auto px-4 sm:px-6 md:px-8">
+    <section id="experience" className="section-padding bg-muted border-y-[3px] border-foreground relative overflow-hidden" ref={ref}>
+      <div className="absolute inset-0 bg-grid-bold opacity-30 pointer-events-none" aria-hidden="true" />
+
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 relative">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-14 sm:mb-16"
+          className="mb-12 sm:mb-16"
         >
-          <span className="text-primary font-medium text-xs sm:text-sm uppercase tracking-wider">
-            My Journey
+          <span className="eyebrow bg-foreground text-background border-foreground">
+            <span className="font-mono text-primary">03 //</span> Track Record
           </span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mt-2">Work Experience</h2>
-          <p className="text-muted-foreground text-sm sm:text-base mt-3 max-w-xl mx-auto">
-            A track record of building real products, learning fast, and delivering quality code.
+          <h2 className="font-display text-super mt-4">
+            WHERE I&apos;VE <br />
+            <span className="text-primary">SHIPPED.</span>
+          </h2>
+          <p className="text-base sm:text-lg font-medium mt-4 max-w-2xl">
+            Real products, real teams, real deadlines. A track record of building, learning, and delivering.
           </p>
         </motion.div>
 
-        <div className="max-w-5xl mx-auto">
-          <div className="relative">
-            {/* Timeline line */}
-            <motion.div
-              className="absolute left-[7px] md:left-1/2 top-0 w-0.5 bg-gradient-to-b from-primary via-primary/40 to-transparent"
-              initial={{ height: 0 }}
-              animate={isInView ? { height: "100%" } : {}}
-              transition={{ duration: 1.2, ease: "easeOut" }}
-              style={{ transform: "translateX(-50%)" }}
-            />
-
-            {experiences.map((exp, index) => (
-              <ExperienceCard
-                key={`${exp.company}-${exp.period}`}
-                exp={exp}
-                index={index}
-                isLeft={index % 2 === 0}
-              />
-            ))}
-          </div>
+        <div className="max-w-5xl">
+          {experiences.map((exp, index) => (
+            <ExperienceCard key={`${exp.company}-${exp.period}`} exp={exp} index={index} />
+          ))}
 
           {/* Activities */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className="mt-16"
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="mt-12 pt-10 border-t-[3px] border-foreground"
           >
-            <h3 className="text-lg sm:text-xl font-semibold mb-6 text-center">
-              Extracurricular Activities
+            <h3 className="font-display text-2xl sm:text-3xl mb-5">
+              EXTRACURRICULAR.
             </h3>
-            <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+            <div className="grid sm:grid-cols-2 gap-4">
               {activities.map((activity, index) => (
-                <motion.div
+                <div
                   key={index}
-                  className="glass-card p-4 flex items-center gap-4"
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  transition={{ duration: 0.2 }}
+                  className="bold-card bold-card-hover p-5 flex items-center gap-4"
                 >
-                  <div className="p-2.5 rounded-xl bg-primary/10 shrink-0">
-                    <Briefcase className="w-5 h-5 text-primary" />
+                  <div className="p-3 bg-primary text-primary-foreground border-[3px] border-foreground shrink-0">
+                    <Briefcase className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm">{activity.title}</h4>
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    <h4 className="font-display uppercase">{activity.title}</h4>
+                    <p className="text-xs font-bold mt-0.5 text-muted-foreground uppercase tracking-wider">
                       {activity.organization} · {activity.period}
                     </p>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </motion.div>
