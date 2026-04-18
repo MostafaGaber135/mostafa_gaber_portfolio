@@ -40,10 +40,17 @@ export default function HeroSection() {
   const [displayText, setDisplayText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [statsReady, setStatsReady] = useState(false);
+  /*
+   * The typing animation re-renders every ~40-80ms, which on mobile can
+   * compete with the critical paint / hydration work and inflate TBT.
+   * We keep it idle until the browser is genuinely idle post-LCP.
+   */
+  const [typingReady, setTypingReady] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
-  /* Typing animation */
+  /* Typing animation — only engages after the page is idle */
   useEffect(() => {
+    if (!typingReady) return;
     const current = roles[roleIndex];
     if (!isDeleting && displayText === current) {
       const t = setTimeout(() => setIsDeleting(true), 2200);
@@ -59,11 +66,23 @@ export default function HeroSection() {
       isDeleting ? 40 : 80,
     );
     return () => clearTimeout(t);
-  }, [displayText, isDeleting, roleIndex]);
+  }, [displayText, isDeleting, roleIndex, typingReady]);
 
   useEffect(() => {
     const t = setTimeout(() => setStatsReady(true), 900);
-    return () => clearTimeout(t);
+    // Kick the typing animation off during idle time, with a generous
+    // setTimeout fallback for browsers that lack requestIdleCallback.
+    const schedule =
+      (window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout?: number }) => number })
+        .requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1200));
+    const idleId = schedule(() => setTypingReady(true), { timeout: 2000 });
+    return () => {
+      clearTimeout(t);
+      const cancel =
+        (window as unknown as { cancelIdleCallback?: (id: number) => void })
+          .cancelIdleCallback ?? window.clearTimeout;
+      cancel(idleId as number);
+    };
   }, []);
 
   return (

@@ -53,25 +53,42 @@ export default function Index() {
         {/* Hero loads eagerly — it's the LCP element */}
         <HeroSection />
 
-        {/* Everything below loads lazily */}
-        <Suspense fallback={<SectionFallback />}>
-          <AboutSection />
-        </Suspense>
-        <Suspense fallback={<SectionFallback />}>
-          <SkillsSection />
-        </Suspense>
-        <Suspense fallback={<SectionFallback />}>
-          <ExperienceSection />
-        </Suspense>
-        <Suspense fallback={<SectionFallback />}>
-          <ProjectsSection />
-        </Suspense>
-        <Suspense fallback={<SectionFallback />}>
-          <CertificatesSection />
-        </Suspense>
-        <Suspense fallback={<SectionFallback />}>
-          <ContactSection />
-        </Suspense>
+        {/*
+         * Everything below loads lazily AND is wrapped in `.section-defer`,
+         * which applies `content-visibility: auto` so the browser skips
+         * layout/paint for off-screen sections until they approach the viewport.
+         * This cuts initial Style & Layout work dramatically on mobile.
+         */}
+        <div className="section-defer">
+          <Suspense fallback={<SectionFallback />}>
+            <AboutSection />
+          </Suspense>
+        </div>
+        <div className="section-defer">
+          <Suspense fallback={<SectionFallback />}>
+            <SkillsSection />
+          </Suspense>
+        </div>
+        <div className="section-defer">
+          <Suspense fallback={<SectionFallback />}>
+            <ExperienceSection />
+          </Suspense>
+        </div>
+        <div className="section-defer">
+          <Suspense fallback={<SectionFallback />}>
+            <ProjectsSection />
+          </Suspense>
+        </div>
+        <div className="section-defer">
+          <Suspense fallback={<SectionFallback />}>
+            <CertificatesSection />
+          </Suspense>
+        </div>
+        <div className="section-defer">
+          <Suspense fallback={<SectionFallback />}>
+            <ContactSection />
+          </Suspense>
+        </div>
       </main>
 
       <Suspense fallback={null}>

@@ -396,4 +396,18 @@ section[id] {
     background-image: radial-gradient(hsl(var(--foreground) / 0.18) 2px, transparent 2px);
     background-size: 22px 22px;
   }
+
+  /*
+   * Below-the-fold sections use content-visibility: auto so the browser
+   * can skip rendering them until they scroll near the viewport. This
+   * slashes initial layout/paint work (especially on mobile, where
+   * Lighthouse was reporting ~950ms of Style & Layout work).
+   *
+   * contain-intrinsic-size gives the browser a placeholder size so the
+   * scrollbar doesn't jump when sections get promoted to real rendering.
+   */
+  .section-defer {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 900px;
+  }
 }

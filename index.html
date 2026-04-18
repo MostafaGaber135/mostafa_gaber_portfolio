@@ -88,14 +88,25 @@
       html.dark #_splash-logo { border-color: #FFFFFF; box-shadow: 8px 8px 0 0 #FFFFFF; }
     </style>
 
-    <!-- Fonts: Archivo Black (display), Archivo (body), JetBrains Mono (code) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <!--
+      Fonts — Archivo Black (display / LCP), Archivo (body), JetBrains Mono.
+      ── Loading strategy ───────────────────────────────────────────────────
+      • Preconnect to fonts.gstatic.com (origin that serves the actual WOFF2
+        files). We drop the fonts.googleapis.com preconnect because the
+        stylesheet is tiny (~1 KB) and loading it issues its own connection —
+        Lighthouse flagged the googleapis preconnect as "unused".
+      • `rel="preload" as="style"` boosts the Google Fonts CSS to the highest
+        fetch priority so it races with the JS bundle instead of waiting for
+        it. The onload handler then upgrades it to `rel="stylesheet"`.
+      • `display=swap` is on the CSS URL so fallback text paints immediately
+        and web fonts swap in without blocking LCP.
+    -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      rel="stylesheet"
-      media="print"
-      onload="this.media='all'"
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      onload="this.rel='stylesheet'"
     />
     <noscript>
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" />
