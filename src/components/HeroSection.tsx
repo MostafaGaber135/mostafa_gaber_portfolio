@@ -116,12 +116,12 @@ export default function HeroSection() {
               style={{ animationDelay: "0.55s", boxShadow: "var(--shadow-sharp-primary)" }}
             >
               <p className="font-mono text-xs uppercase tracking-[0.25em] mb-1 opacity-70">// ROLE</p>
-              <p className="font-display text-xl sm:text-2xl md:text-3xl text-primary flex items-center relative">
+              <p className="font-display text-xl sm:text-2xl md:text-3xl flex items-center" style={{ color: 'hsl(202 100% 65%)' }}>
                 <span>{displayText || "\u00A0"}</span>
                 <span
-                  className="inline-block w-3 h-6 sm:h-7 ml-1 shrink-0 bg-primary animate-blink"
+                  className="inline-block w-3 h-6 sm:h-7 ml-1 shrink-0 animate-blink"
                   aria-hidden="true"
-                  style={{ contain: 'layout' }}
+                  style={{ contain: 'layout', backgroundColor: 'hsl(202 100% 65%)' }}
                 />
               </p>
             </div>
