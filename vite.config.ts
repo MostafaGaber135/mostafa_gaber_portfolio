@@ -59,6 +59,27 @@ function inlineCssPlugin(): Plugin {
   };
 }
 
+/**
+ * Boost fetch priority on the main JS entry to shorten the critical request chain.
+ * Adds fetchpriority="high" to the <script type="module"> emitted by Vite.
+ */
+function boostEntryPriorityPlugin(): Plugin {
+  return {
+    name: "boost-entry-priority",
+    apply: "build",
+    enforce: "post",
+    transformIndexHtml: {
+      order: "post",
+      handler(html) {
+        return html.replace(
+          /<script\s+type="module"\s+crossorigin\s+src="([^"]+)"><\/script>/,
+          '<script type="module" crossorigin src="$1" fetchpriority="high"></script>',
+        );
+      },
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => ({
   base: "/",
 
@@ -73,6 +94,7 @@ export default defineConfig(({ mode }) => ({
     react(),
     mode === "development" && componentTagger(),
     inlineCssPlugin(),
+    boostEntryPriorityPlugin(),
   ].filter(Boolean),
 
   resolve: {

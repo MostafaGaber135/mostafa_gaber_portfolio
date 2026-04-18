@@ -48,6 +48,10 @@ section[id] {
 
     --accent-bright: 202 100% 65%;    /* Use on dark bg: 4.7:1 contrast ✓ AA */
 
+    /* Secondary color tuned for use ON dark surfaces (bg-foreground in light mode).
+       Bright green with ~8:1 contrast on #111 — passes WCAG AA/AAA. */
+    --secondary-on-surface: 152 85% 55%;
+
     --shadow-sharp: 6px 6px 0 0 hsl(0 0% 7%);
     --shadow-sharp-lg: 10px 10px 0 0 hsl(0 0% 7%);
     --shadow-sharp-primary: 6px 6px 0 0 hsl(202 100% 33%);
@@ -89,6 +93,10 @@ section[id] {
     --ring: 202 100% 50%;
 
     --accent-bright: 202 100% 65%;    /* consistent across themes */
+
+    /* In dark mode, bg-foreground = white, so we use the dark green
+       (#006E48) which gives ~6.2:1 contrast on white — passes AA. */
+    --secondary-on-surface: 156 100% 22%;
 
     --shadow-sharp: 6px 6px 0 0 hsl(0 0% 100%);
     --shadow-sharp-lg: 10px 10px 0 0 hsl(0 0% 100%);

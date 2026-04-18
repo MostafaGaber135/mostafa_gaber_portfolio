@@ -12,7 +12,7 @@ const projects = [
     technologies: ["React", "TypeScript", "Tailwind CSS", "Vercel Serverless", "GNews API", "React.memo"],
     github: "https://github.com/MostafaGaber135/Veritas",
     live: "https://veritas-opal.vercel.app/",
-    image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&h=500&fit=crop",
+    image: "https://images.unsplash.com/photo-1504711434969-e33886168f5c",
     accent: "primary",
     highlights: ["1,000+ real-time articles", "Secure API proxy layer", "Debounced search & filtering"],
   },
@@ -24,7 +24,7 @@ const projects = [
     technologies: ["Next.js", "Material UI", "Supabase", "TypeScript", "SSG", "SEO"],
     github: "https://github.com/MostafaGaber135/CodeMap",
     live: "https://code-map-psi.vercel.app/",
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=500&fit=crop",
+    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3",
     accent: "secondary",
     highlights: ["20+ learning roadmaps", "Arabic & English support", "SSG for fast loads"],
   },
@@ -36,7 +36,7 @@ const projects = [
     technologies: ["React", "Context API", "React Router", "DaisyUI", "Tailwind CSS", "TMDb API"],
     github: "https://github.com/MostafaGaber135/MovieFlix.git",
     live: "https://movie-flix-bice-pi.vercel.app/",
-    image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&h=500&fit=crop",
+    image: "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba",
     accent: "surface",
     highlights: ["500+ movies via TMDb API", "Favorites with localStorage", "3 responsive breakpoints"],
   },
@@ -49,6 +49,14 @@ const accentClasses: Record<string, string> = {
   secondary: "bg-secondary text-secondary-foreground",
   surface:   "bg-foreground text-background",
 };
+
+/**
+ * Build a responsive, WebP-encoded Unsplash URL.
+ * Unsplash serves WebP via `fm=webp` — typically ~35-45% smaller than JPEG
+ * at equal perceived quality. `q=75` keeps file size tight while preserving detail.
+ */
+const imgUrl = (base: string, w: number, h: number) =>
+  `${base}?fm=webp&q=75&w=${w}&h=${h}&fit=crop&auto=format`;
 
 function ProjectCard({
   project,
@@ -80,12 +88,12 @@ function ProjectCard({
         {/* Image */}
         <div className="relative h-48 overflow-hidden shrink-0 bg-muted border-b-[3px] border-foreground">
           <img
-            src={project.image.replace("w=800&h=500", "w=600&h=375")}
-            srcSet={`${project.image.replace("w=800&h=500", "w=400&h=250")} 400w, ${project.image.replace("w=800&h=500", "w=600&h=375")} 600w, ${project.image} 800w`}
-            sizes="(max-width: 640px) 400px, (max-width: 1024px) 600px, 800px"
+            src={imgUrl(project.image, 400, 250)}
+            srcSet={`${imgUrl(project.image, 400, 250)} 400w, ${imgUrl(project.image, 600, 375)} 600w, ${imgUrl(project.image, 800, 500)} 800w`}
+            sizes="(max-width: 640px) 400px, (max-width: 1024px) 400px, 400px"
             alt={`${project.title} – ${project.subtitle}`}
-            width={600}
-            height={375}
+            width={400}
+            height={250}
             loading="lazy"
             decoding="async"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -180,9 +188,9 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
       >
         <div className={`relative ${accentClasses[project.accent]} border-b-[3px] border-foreground`}>
           <img
-            src={project.image.replace("w=800&h=500", "w=600&h=375")}
-            srcSet={`${project.image.replace("w=800&h=500", "w=400&h=250")} 400w, ${project.image.replace("w=800&h=500", "w=600&h=375")} 600w, ${project.image} 800w`}
-            sizes="(max-width: 640px) 400px, (max-width: 1024px) 600px, 800px"
+            src={imgUrl(project.image, 600, 375)}
+            srcSet={`${imgUrl(project.image, 400, 250)} 400w, ${imgUrl(project.image, 600, 375)} 600w, ${imgUrl(project.image, 800, 500)} 800w`}
+            sizes="(max-width: 640px) 400px, (max-width: 1024px) 600px, 640px"
             alt={`${project.title} – ${project.subtitle}`}
             width={600}
             height={375}
