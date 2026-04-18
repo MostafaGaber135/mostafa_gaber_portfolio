@@ -33,10 +33,11 @@ export default function ScrollProgressBar() {
   }, []);
 
   useEffect(() => {
-    let totalHeight = Math.max(
-      1,
-      document.documentElement.scrollHeight - window.innerHeight,
-    );
+    // Start with a dummy positive value so nothing here reads layout
+    // synchronously during React's commit. The first real value is
+    // computed after the next paint, by which point the browser has
+    // already laid out the document and `scrollHeight` is a cache hit.
+    let totalHeight = 1;
     let ticking = false;
 
     const refreshTotal = () => {
@@ -59,6 +60,11 @@ export default function ScrollProgressBar() {
       requestAnimationFrame(paint);
     };
 
+    // Defer the initial scrollHeight read to a rAF so it doesn't run
+    // during React's commit phase. Lighthouse was catching this as the
+    // :2:43265 forced-reflow hit (~55–86 ms on mobile).
+    const rafInit = window.requestAnimationFrame(refreshTotal);
+
     // Recompute the total whenever the viewport or document size changes.
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", refreshTotal, { passive: true });
@@ -67,6 +73,7 @@ export default function ScrollProgressBar() {
     ro.observe(document.body);
 
     return () => {
+      window.cancelAnimationFrame(rafInit);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", refreshTotal);
       ro.disconnect();
