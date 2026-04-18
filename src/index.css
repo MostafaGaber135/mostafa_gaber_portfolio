@@ -350,6 +350,25 @@ section[id] {
 }
 
 @layer utilities {
+  /* ── Defensive contrast fix ──────────────────────────────
+     The footer uses bg-foreground (dark #111 in light mode).
+     Ensure ANY .text-secondary / .decoration-secondary used inside it
+     falls back to the high-contrast on-surface variant that passes WCAG AA.
+     This is a belt-and-suspenders rule in case cached CSS serves the old classes. */
+  footer.bg-foreground .text-secondary,
+  footer.bg-foreground :where(.text-secondary) {
+    color: hsl(var(--secondary-on-surface)) !important;
+  }
+  footer.bg-foreground .decoration-secondary,
+  footer.bg-foreground :where(.decoration-secondary) {
+    -webkit-text-decoration-color: hsl(var(--secondary-on-surface)) !important;
+            text-decoration-color: hsl(var(--secondary-on-surface)) !important;
+  }
+  footer.bg-foreground .hover\:text-secondary:hover,
+  footer.bg-foreground :where(.hover\:text-secondary):hover {
+    color: hsl(var(--secondary-on-surface)) !important;
+  }
+
   .text-stroke {
     -webkit-text-stroke: 2px hsl(var(--foreground));
     color: transparent;
