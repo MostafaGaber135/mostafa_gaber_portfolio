@@ -56,11 +56,11 @@ function SkillBar({
         <span className="text-sm font-black uppercase tracking-wider truncate">{name}</span>
         <span className="font-mono text-xs font-bold shrink-0">{level}%</span>
       </div>
-      <div className="skill-bar">
+      <div className="skill-bar" role="progressbar" aria-label={name} aria-valuenow={level} aria-valuemin={0} aria-valuemax={100}>
         <div
           className="skill-bar-fill skill-fill"
           style={{
-            width: visible ? `${level}%` : 0,
+            transform: visible ? `scaleX(${level / 100})` : "scaleX(0)",
             transitionDelay: `${delay}ms`,
             background: tone === "secondary" ? "hsl(var(--secondary))" : "hsl(var(--primary))",
           }}
@@ -190,11 +190,11 @@ export default function SkillsSection() {
                       <span className="font-black uppercase tracking-wider text-sm">{lang}</span>
                       <span className="font-mono text-xs font-bold text-primary shrink-0">{level}</span>
                     </div>
-                    <div className="skill-bar">
+                    <div className="skill-bar" role="progressbar" aria-label={lang} aria-valuenow={width} aria-valuemin={0} aria-valuemax={100}>
                       <div
                         className="skill-bar-fill skill-fill"
                         style={{
-                          width: isVisible ? `${width}%` : 0,
+                          transform: isVisible ? `scaleX(${width / 100})` : "scaleX(0)",
                           transitionDelay: "500ms",
                           background: "hsl(var(--secondary))",
                         }}

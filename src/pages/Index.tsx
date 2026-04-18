@@ -1,19 +1,22 @@
-import { lazy, Suspense } from "react";
-import { Helmet } from "react-helmet-async";
+import { lazy, Suspense, useEffect, useState } from "react";
 import LoadingScreen from "@/components/LoadingScreen";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import ScrollProgressBar from "@/components/ScrollProgressBar";
-import { Analytics } from "@vercel/analytics/react";
 
-// Lazy load all below-fold sections — not downloaded until needed
-const AboutSection       = lazy(() => import("@/components/AboutSection"));
-const SkillsSection      = lazy(() => import("@/components/SkillsSection"));
-const ExperienceSection  = lazy(() => import("@/components/ExperienceSection"));
-const ProjectsSection    = lazy(() => import("@/components/ProjectsSection"));
-const CertificatesSection= lazy(() => import("@/components/CertificatesSection"));
-const ContactSection     = lazy(() => import("@/components/ContactSection"));
-const Footer             = lazy(() => import("@/components/Footer"));
+// Lazy-load everything below the fold — kept out of the initial JS chunk.
+const AboutSection        = lazy(() => import("@/components/AboutSection"));
+const SkillsSection       = lazy(() => import("@/components/SkillsSection"));
+const ExperienceSection   = lazy(() => import("@/components/ExperienceSection"));
+const ProjectsSection     = lazy(() => import("@/components/ProjectsSection"));
+const CertificatesSection = lazy(() => import("@/components/CertificatesSection"));
+const ContactSection      = lazy(() => import("@/components/ContactSection"));
+const Footer              = lazy(() => import("@/components/Footer"));
+
+// Analytics is non-critical — mount it only after the browser is idle.
+const Analytics = lazy(() =>
+  import("@vercel/analytics/react").then((m) => ({ default: m.Analytics })),
+);
 
 function SectionFallback() {
   return (
@@ -24,18 +27,24 @@ function SectionFallback() {
 }
 
 export default function Index() {
+  const [mountAnalytics, setMountAnalytics] = useState(false);
+
+  useEffect(() => {
+    const schedule =
+      (window as unknown as { requestIdleCallback?: (cb: () => void) => number })
+        .requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 2500));
+    const id = schedule(() => setMountAnalytics(true));
+    return () => {
+      const cancel =
+        (window as unknown as { cancelIdleCallback?: (id: number) => void })
+          .cancelIdleCallback ?? window.clearTimeout;
+      cancel(id as number);
+    };
+  }, []);
+
   return (
     <>
       <ScrollProgressBar />
-      <Helmet>
-        <title>Mostafa Gaber Ahmed | Frontend Developer</title>
-        <meta name="description" content="Frontend Developer specializing in React, TypeScript, and modern web technologies. Building responsive, accessible, and maintainable web applications." />
-        <meta name="keywords" content="Frontend Developer, React, TypeScript, JavaScript, Web Developer, Mostafa Gaber Ahmed" />
-        <meta property="og:title" content="Mostafa Gaber Ahmed | Frontend Developer" />
-        <meta property="og:description" content="Frontend Developer specializing in React, TypeScript, and modern web technologies." />
-        <meta property="og:type" content="website" />
-        <link rel="canonical" href="https://mostafagaberahmed.site/" />
-      </Helmet>
 
       <LoadingScreen />
       <Navbar />
@@ -69,7 +78,11 @@ export default function Index() {
         <Footer />
       </Suspense>
 
-      <Analytics />
+      {mountAnalytics && (
+        <Suspense fallback={null}>
+          <Analytics />
+        </Suspense>
+      )}
     </>
   );
 }
