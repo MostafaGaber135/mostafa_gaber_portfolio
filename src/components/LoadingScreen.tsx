@@ -1,74 +1,35 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
+/**
+ * LoadingScreen
+ * ─────────────
+ * Previously this component rendered a full-screen React overlay for ~700 ms
+ * after mount. That overlay sat on top of the hero and delayed the Lighthouse
+ * LCP measurement (Chrome only records LCP for elements visible to the user).
+ *
+ * We keep the static HTML splash in `index.html` for FOUC prevention before
+ * React boots, and this component's only job is now to dispose of that splash
+ * as soon as React takes over — it renders nothing itself, so the hero is
+ * visible immediately and wins LCP on the first paint.
+ */
 export default function LoadingScreen() {
-  const [visible, setVisible] = useState(true);
-  const [fading,  setFading]  = useState(false);
-
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-
-    // Remove the static HTML splash ASAP — don't block LCP.
     const splash = document.getElementById("splash");
-    if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+    if (!splash) return;
 
-    const t1 = setTimeout(() => setFading(true), 350);
-    const t2 = setTimeout(() => {
-      setVisible(false);
-      document.body.style.overflow = "";
-    }, 700);
+    // Fade the splash out in one frame, then remove it on animationend.
+    // This avoids the abrupt "pop" that would happen if we detached it
+    // synchronously while it was still fully opaque.
+    splash.style.transition = "opacity 180ms ease-out";
+    splash.style.opacity = "0";
+    splash.style.pointerEvents = "none";
 
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      document.body.style.overflow = "";
-    };
+    const t = window.setTimeout(() => {
+      splash.parentNode?.removeChild(splash);
+    }, 200);
+
+    return () => window.clearTimeout(t);
   }, []);
 
-  if (!visible) return null;
-
-  return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-background"
-      style={{
-        transition: "opacity 0.5s ease",
-        opacity: fading ? 0 : 1,
-        pointerEvents: fading ? "none" : "auto",
-      }}
-      aria-label="Loading"
-      role="status"
-    >
-      <div className="bg-grid-bold absolute inset-0 opacity-40" aria-hidden="true" />
-
-      <div className="relative text-center">
-        <div
-          className="inline-flex items-center justify-center w-28 h-28 md:w-36 md:h-36 bg-primary text-primary-foreground border-[4px] border-foreground font-display text-5xl md:text-6xl shadow-bold-lg animate-scale-in"
-          style={{ animationDuration: "0.5s" }}
-        >
-          MGA
-        </div>
-
-        <div
-          className="mt-6 flex items-center justify-center gap-1 animate-fade-in"
-          style={{ animationDelay: "0.3s", animationDuration: "0.4s" }}
-          aria-hidden="true"
-        >
-          {[0, 1, 2].map((i) => (
-            <div
-              key={i}
-              className="w-3 h-3 bg-foreground animate-bounce"
-              style={{ animationDelay: `${i * 0.15}s` }}
-            />
-          ))}
-        </div>
-
-        <p
-          className="font-mono text-xs uppercase tracking-[0.4em] mt-5 animate-fade-in"
-          style={{ animationDelay: "0.4s" }}
-        >
-          LOADING PORTFOLIO
-        </p>
-      </div>
-    </div>
-  );
+  return null;
 }
-

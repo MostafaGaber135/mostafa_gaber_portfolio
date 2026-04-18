@@ -95,15 +95,21 @@ export default function HeroSection() {
             </span>
           </div>
 
-          {/* Massive display heading */}
+          {/*
+           * Massive display heading — LCP element.
+           * We intentionally avoid opacity-based entrance animations here so the
+           * browser paints the hero text on the first frame (LCP ≈ TTFB).
+           * The subtle slide/skew reveal is still applied via `animate-rise-word`,
+           * which animates transform only (opacity stays at 1).
+           */}
           <h1 className="display-hero mb-6 sm:mb-8 text-[clamp(3rem,12vw,10rem)]">
-            <span className="block animate-word" style={{ animationDelay: "0.1s" }}>
+            <span className="block animate-rise-word" style={{ animationDelay: "0.02s" }}>
               MOSTAFA
             </span>
-            <span className="block animate-word text-primary" style={{ animationDelay: "0.25s" }}>
+            <span className="block animate-rise-word text-primary" style={{ animationDelay: "0.06s" }}>
               GABER
             </span>
-            <span className="block animate-word text-stroke" style={{ animationDelay: "0.4s" }}>
+            <span className="block animate-rise-word text-stroke" style={{ animationDelay: "0.1s" }}>
               AHMED.
             </span>
           </h1>
@@ -126,10 +132,13 @@ export default function HeroSection() {
               </p>
             </div>
 
-            {/* Description */}
+            {/*
+             * Description — often detected by Lighthouse as the LCP element.
+             * Render with opacity 1 immediately (no fade-up) so LCP fires on the
+             * first paint. Container-level entrance motion is not needed here.
+             */}
             <p
-              className="text-base sm:text-lg md:text-xl leading-relaxed font-medium max-w-xl animate-fade-up"
-              style={{ animationDelay: "0.7s" }}
+              className="text-base sm:text-lg md:text-xl leading-relaxed font-medium max-w-xl"
             >
               I build <span className="bg-primary text-primary-foreground px-1.5 font-black">fast</span>,{" "}
               <span className="bg-secondary text-secondary-foreground px-1.5 font-black">accessible</span>, and
