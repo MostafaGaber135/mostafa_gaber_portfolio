@@ -7,15 +7,15 @@ export default function LoadingScreen() {
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
-    const t1 = setTimeout(() => setFading(true), 800);
+    // Remove the static HTML splash ASAP — don't block LCP.
+    const splash = document.getElementById("splash");
+    if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
+
+    const t1 = setTimeout(() => setFading(true), 350);
     const t2 = setTimeout(() => {
       setVisible(false);
       document.body.style.overflow = "";
-
-      // Remove the static HTML splash from DOM so it never blocks clicks.
-      const splash = document.getElementById("splash");
-      if (splash && splash.parentNode) splash.parentNode.removeChild(splash);
-    }, 1200);
+    }, 700);
 
     return () => {
       clearTimeout(t1);
@@ -71,3 +71,4 @@ export default function LoadingScreen() {
     </div>
   );
 }
+

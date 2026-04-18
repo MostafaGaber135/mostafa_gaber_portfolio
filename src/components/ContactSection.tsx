@@ -1,8 +1,9 @@
 import { useToast } from "@/hooks/use-toast";
+import { useIntersect } from "@/hooks/use-intersect";
 import emailjs from "@emailjs/browser";
 import { Github, Linkedin, Mail, MapPin, Phone, Send } from "lucide-react";
 import type { FormEvent } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -18,8 +19,7 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID as string |
 const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY as string | undefined;
 
 export default function ContactSection() {
-  const ref = useRef<HTMLElement | null>(null);
-  const [visible, setVisible] = useState(false);
+  const [ref, isVisible] = useIntersect({ rootMargin: "-100px" });
   const { toast } = useToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,18 +30,9 @@ export default function ContactSection() {
   });
 
   useEffect(() => {
-    if (EMAILJS_PUBLIC_KEY) emailjs.init(EMAILJS_PUBLIC_KEY);
-  }, []);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { rootMargin: "-80px", threshold: 0.05 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
+    if (EMAILJS_PUBLIC_KEY) {
+      emailjs.init(EMAILJS_PUBLIC_KEY);
+    }
   }, []);
 
   async function handleSubmit(e: FormEvent) {
@@ -60,12 +51,14 @@ export default function ContactSection() {
     setIsSubmitting(true);
 
     try {
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      const templateParams = {
         from_name: formData.name,
         from_email: formData.email,
         reply_to: formData.email,
         message: formData.message,
-      });
+      };
+
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
 
       toast({
         title: "Message sent!",
@@ -85,22 +78,25 @@ export default function ContactSection() {
   }
 
   const contactInfo = [
-    { icon: Mail,   label: "Email",    value: "mostafagaber1234560@gmail.com", href: "mailto:mostafagaber1234560@gmail.com", accent: "bg-primary text-primary-foreground" },
-    { icon: Phone,  label: "Phone",    value: "+20 102 823 7890",              href: "tel:+201028237890",                  accent: "bg-secondary text-secondary-foreground" },
-    { icon: MapPin, label: "Location", value: "Egypt",                         href: undefined,                            accent: "bg-foreground text-background" },
+    { icon: Mail, label: "Email", value: "mostafagaber1234560@gmail.com", href: "mailto:mostafagaber1234560@gmail.com", accent: "bg-primary text-primary-foreground" },
+    { icon: Phone, label: "Phone", value: "+20 102 823 7890", href: "tel:+201028237890", accent: "bg-secondary text-secondary-foreground" },
+    { icon: MapPin, label: "Location", value: "Egypt", accent: "bg-foreground text-background" },
   ];
 
   const socialLinks = [
-    { icon: Github,   label: "GitHub",   href: "https://github.com/MostafaGaber135" },
+    { icon: Github, label: "GitHub", href: "https://github.com/MostafaGaber135" },
     { icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/in/mostafagaber135/" },
-    { icon: Mail,     label: "Email",    href: "mailto:mostafagaber1234560@gmail.com" },
+    { icon: Mail, label: "Email", href: "mailto:mostafagaber1234560@gmail.com" },
   ];
 
   return (
-    <section id="contact" className="section-padding" ref={ref}>
+    <section
+      id="contact"
+      ref={ref as React.RefObject<HTMLElement>}
+      className="section-padding"
+    >
       <div className="container mx-auto">
-        {/* Header */}
-        <div className={`mb-12 sm:mb-16 reveal-up${visible ? " in-view" : ""}`}>
+        <div className={`mb-12 sm:mb-16 reveal${isVisible ? " is-visible" : ""}`}>
           <span className="eyebrow bg-primary text-primary-foreground">
             <span className="font-mono">06 //</span> Get in touch
           </span>
@@ -115,13 +111,16 @@ export default function ContactSection() {
 
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 max-w-6xl">
           {/* Left — info */}
-          <div className={`space-y-5 reveal-left${visible ? " in-view" : ""}`} style={{ "--d": "0.2s" } as React.CSSProperties}>
+          <div
+            className={`space-y-5 reveal-x${isVisible ? " is-visible" : ""}`}
+            style={{ transitionDelay: "200ms" }}
+          >
             <div className="space-y-4">
               {contactInfo.map((item, index) => (
                 <div
                   key={item.label}
-                  className={`bold-card bold-card-hover flex items-stretch overflow-hidden reveal-left${visible ? " in-view" : ""}`}
-                  style={{ "--d": `${0.25 + index * 0.08}s` } as React.CSSProperties}
+                  className={`bold-card bold-card-hover flex items-stretch overflow-hidden reveal-x${isVisible ? " is-visible" : ""}`}
+                  style={{ transitionDelay: `${300 + index * 80}ms` }}
                 >
                   <div className={`${item.accent} p-5 border-r-[3px] border-foreground flex items-center justify-center shrink-0`}>
                     <item.icon className="w-6 h-6" aria-hidden="true" />
@@ -144,7 +143,7 @@ export default function ContactSection() {
             </div>
 
             <div className="bold-card p-5 sm:p-6 bg-foreground text-background">
-              <p className="font-mono text-[10px] uppercase tracking-[0.3em] mb-3" style={{ color: 'hsl(202 100% 65%)' }}>
+              <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-secondary mb-3">
                 // CONNECT
               </p>
               <div className="flex gap-2">
@@ -155,8 +154,8 @@ export default function ContactSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={link.label}
-                    className={`w-12 h-12 bg-background text-foreground border-[3px] border-background flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors active:translate-x-[2px] active:translate-y-[2px] reveal-up${visible ? " in-view" : ""}`}
-                    style={{ "--d": `${0.45 + index * 0.1}s` } as React.CSSProperties}
+                    className={`w-12 h-12 bg-background text-foreground border-[3px] border-background flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors active:translate-x-[2px] active:translate-y-[2px] reveal${isVisible ? " is-visible" : ""}`}
+                    style={{ transitionDelay: `${500 + index * 100}ms` }}
                   >
                     <link.icon className="w-5 h-5" aria-hidden="true" />
                   </a>
@@ -166,14 +165,17 @@ export default function ContactSection() {
           </div>
 
           {/* Right — form */}
-          <div className={`reveal-right${visible ? " in-view" : ""}`} style={{ "--d": "0.3s" } as React.CSSProperties}>
+          <div
+            className={`reveal-x-right${isVisible ? " is-visible" : ""}`}
+            style={{ transitionDelay: "300ms" }}
+          >
             <form onSubmit={handleSubmit} className="bold-card p-6 md:p-8 space-y-5">
               <div>
-                <label htmlFor="contact-name" className="block font-mono text-xs uppercase tracking-[0.25em] mb-2">
+                <label htmlFor="name" className="block font-mono text-xs uppercase tracking-[0.25em] mb-2">
                   // NAME
                 </label>
                 <Input
-                  id="contact-name"
+                  id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Your name"
@@ -183,11 +185,11 @@ export default function ContactSection() {
               </div>
 
               <div>
-                <label htmlFor="contact-email" className="block font-mono text-xs uppercase tracking-[0.25em] mb-2">
+                <label htmlFor="email" className="block font-mono text-xs uppercase tracking-[0.25em] mb-2">
                   // EMAIL
                 </label>
                 <Input
-                  id="contact-email"
+                  id="email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -198,11 +200,11 @@ export default function ContactSection() {
               </div>
 
               <div>
-                <label htmlFor="contact-message" className="block font-mono text-xs uppercase tracking-[0.25em] mb-2">
+                <label htmlFor="message" className="block font-mono text-xs uppercase tracking-[0.25em] mb-2">
                   // MESSAGE
                 </label>
                 <Textarea
-                  id="contact-message"
+                  id="message"
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   placeholder="Tell me what you're building..."
@@ -214,9 +216,9 @@ export default function ContactSection() {
 
               <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? (
-                  <div
-                    className="w-5 h-5 border-[3px] border-primary-foreground border-t-transparent rounded-full"
-                    style={{ animation: "spin 1s linear infinite" }}
+                  <span
+                    className="w-5 h-5 border-[3px] border-primary-foreground border-t-transparent rounded-full inline-block animate-spin"
+                    aria-label="Sending"
                   />
                 ) : (
                   <>

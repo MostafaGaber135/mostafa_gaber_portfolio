@@ -1,6 +1,7 @@
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Github, ExternalLink, X, ArrowUpRight } from "lucide-react";
 import { Button } from "./ui/button";
+import { useIntersect } from "@/hooks/use-intersect";
 
 const projects = [
   {
@@ -58,24 +59,13 @@ function ProjectCard({
   index: number;
   onClick: () => void;
 }) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { rootMargin: "-40px", threshold: 0.05 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
+  const [ref, isVisible] = useIntersect({ rootMargin: "-60px" });
 
   return (
     <div
-      ref={ref}
-      className={`group cursor-pointer h-full reveal-up${visible ? " in-view" : ""}`}
-      style={{ "--d": `${index * 0.1}s` } as React.CSSProperties}
+      ref={ref as React.RefObject<HTMLDivElement>}
+      className={`group cursor-pointer h-full reveal${isVisible ? " is-visible" : ""}`}
+      style={{ transitionDelay: `${index * 100}ms` }}
       onClick={onClick}
     >
       <div className="bold-card bold-card-hover overflow-hidden h-full flex flex-col">
@@ -112,6 +102,7 @@ function ProjectCard({
 
           <p className="text-sm font-medium leading-relaxed mt-3 line-clamp-2 flex-1">{project.description}</p>
 
+          {/* Highlights */}
           <ul className="flex flex-col gap-1.5 mt-4">
             {project.highlights.map((h) => (
               <li key={h} className="flex items-start gap-2 text-xs font-bold">
@@ -121,6 +112,7 @@ function ProjectCard({
             ))}
           </ul>
 
+          {/* Tech tags */}
           <div className="flex flex-wrap gap-1.5 mt-4">
             {project.technologies.slice(0, 3).map((tech) => (
               <span key={tech} className="tag-chip">{tech}</span>
@@ -130,12 +122,12 @@ function ProjectCard({
             )}
           </div>
 
+          {/* Links */}
           <div className="flex gap-4 items-center mt-5 pt-4 border-t-[3px] border-foreground">
             <a
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`${project.title} source code on GitHub`}
               className="inline-flex items-center gap-1.5 font-display text-xs uppercase tracking-wider hover:text-primary transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
@@ -146,7 +138,6 @@ function ProjectCard({
                 href={project.live}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`${project.title} live demo`}
                 className="inline-flex items-center gap-1.5 font-display text-xs uppercase tracking-wider hover:text-primary transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >
@@ -167,22 +158,25 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
   }, [onClose]);
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/80 backdrop-blur-sm animate-fade-in"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="project-modal-title"
-      style={{ animation: "fadeIn 0.2s ease both" }}
     >
       <div
-        className="bold-card bg-background max-w-2xl w-full max-h-[90vh] overflow-auto"
+        className="bold-card bg-background max-w-2xl w-full max-h-[90vh] overflow-auto animate-scale-in"
         onClick={(e) => e.stopPropagation()}
-        style={{ animation: "scaleIn 0.25s cubic-bezier(0.22,1,0.36,1) both" }}
       >
         <div className={`relative ${accentClasses[project.accent]} border-b-[3px] border-foreground`}>
           <img
@@ -264,24 +258,18 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
 
 export default function ProjectsSection() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const ref = useRef<HTMLElement | null>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { rootMargin: "-80px", threshold: 0.05 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
+  const [ref, isVisible] = useIntersect({ rootMargin: "-100px" });
 
   return (
-    <section id="projects" className="section-padding" ref={ref}>
+    <section
+      id="projects"
+      ref={ref as React.RefObject<HTMLElement>}
+      className="section-padding"
+    >
       <div className="container mx-auto px-4 sm:px-6 md:px-8">
-        <div className={`flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 sm:mb-16 reveal-up${visible ? " in-view" : ""}`}>
+        <div
+          className={`flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 sm:mb-16 reveal${isVisible ? " is-visible" : ""}`}
+        >
           <div>
             <span className="eyebrow bg-primary text-primary-foreground">
               <span className="font-mono">04 //</span> Selected Work
@@ -307,7 +295,10 @@ export default function ProjectsSection() {
           ))}
         </div>
 
-        <div className={`text-center mt-14 reveal-fade${visible ? " in-view" : ""}`} style={{ "--d": "0.8s" } as React.CSSProperties}>
+        <div
+          className={`text-center mt-14 reveal${isVisible ? " is-visible" : ""}`}
+          style={{ transitionDelay: "500ms" }}
+        >
           <Button variant="surface" size="lg" asChild>
             <a href="https://github.com/MostafaGaber135" target="_blank" rel="noopener noreferrer">
               <Github className="w-5 h-5 mr-2" />
@@ -317,7 +308,6 @@ export default function ProjectsSection() {
         </div>
       </div>
 
-      {/* Modal */}
       {selectedProject && (
         <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
       )}

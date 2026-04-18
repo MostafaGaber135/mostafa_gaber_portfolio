@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useIntersect } from "@/hooks/use-intersect";
 
 const coreSkills = [
   { name: "JavaScript (ES6+)", level: 92 },
@@ -37,46 +37,33 @@ const softSkills = [
   "Adaptability",
 ];
 
-function useReveal(rootMargin = "-60px") {
-  const ref = useRef<HTMLElement | null>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { rootMargin, threshold: 0.05 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [rootMargin]);
-  return [ref, visible] as const;
-}
-
-function SkillBar({ name, level, delay }: { name: string; level: number; delay: number }) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { rootMargin: "-20px", threshold: 0.1 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
+function SkillBar({
+  name,
+  level,
+  delay,
+  tone = "primary",
+  visible,
+}: {
+  name: string;
+  level: number;
+  delay: number;
+  tone?: "primary" | "secondary";
+  visible: boolean;
+}) {
   return (
-    <div ref={ref} className="space-y-2">
+    <div className="space-y-2">
       <div className="flex justify-between items-center gap-3">
         <span className="text-sm font-black uppercase tracking-wider truncate">{name}</span>
         <span className="font-mono text-xs font-bold shrink-0">{level}%</span>
       </div>
       <div className="skill-bar">
         <div
-          className={`skill-bar-fill${visible ? " animate-fill" : ""}`}
-          style={{ "--skill-w": `${level}%`, "--d": `${delay}s` } as React.CSSProperties}
+          className="skill-bar-fill skill-fill"
+          style={{
+            width: visible ? `${level}%` : 0,
+            transitionDelay: `${delay}ms`,
+            background: tone === "secondary" ? "hsl(var(--secondary))" : "hsl(var(--primary))",
+          }}
         />
       </div>
     </div>
@@ -84,13 +71,16 @@ function SkillBar({ name, level, delay }: { name: string; level: number; delay: 
 }
 
 export default function SkillsSection() {
-  const [ref, visible] = useReveal("-80px");
+  const [ref, isVisible] = useIntersect({ rootMargin: "-100px" });
 
   return (
-    <section id="skills" className="section-padding relative overflow-hidden" ref={ref as React.RefObject<HTMLElement>}>
+    <section
+      id="skills"
+      ref={ref as React.RefObject<HTMLElement>}
+      className="section-padding relative overflow-hidden"
+    >
       <div className="container mx-auto px-4 sm:px-6 md:px-8 relative">
-        {/* Header */}
-        <div className={`mb-12 sm:mb-16 reveal-up${visible ? " in-view" : ""}`}>
+        <div className={`mb-12 sm:mb-16 reveal${isVisible ? " is-visible" : ""}`}>
           <span className="eyebrow bg-secondary text-secondary-foreground">
             <span className="font-mono">02 //</span> Arsenal
           </span>
@@ -105,27 +95,45 @@ export default function SkillsSection() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 max-w-6xl mx-auto">
           {/* Core & Frameworks */}
-          <div className={`bold-card p-6 sm:p-7 reveal-up${visible ? " in-view" : ""}`} style={{ "--d": "0.1s" } as React.CSSProperties}>
+          <div
+            className={`bold-card p-6 sm:p-7 reveal${isVisible ? " is-visible" : ""}`}
+            style={{ transitionDelay: "100ms" }}
+          >
             <div className="flex items-center justify-between mb-5 pb-4 border-b-[3px] border-foreground">
               <h3 className="font-display text-xl">CORE</h3>
               <span className="tag-chip tag-chip-primary">FRAMEWORKS</span>
             </div>
             <div className="space-y-4">
               {coreSkills.map((skill, index) => (
-                <SkillBar key={skill.name} name={skill.name} level={skill.level} delay={index * 0.06} />
+                <SkillBar
+                  key={skill.name}
+                  name={skill.name}
+                  level={skill.level}
+                  delay={index * 60}
+                  visible={isVisible}
+                />
               ))}
             </div>
           </div>
 
           {/* UI & Styling + Soft */}
-          <div className={`bold-card p-6 sm:p-7 bg-foreground text-background reveal-up${visible ? " in-view" : ""}`} style={{ "--d": "0.18s" } as React.CSSProperties}>
+          <div
+            className={`bold-card p-6 sm:p-7 bg-foreground text-background reveal${isVisible ? " is-visible" : ""}`}
+            style={{ transitionDelay: "200ms" }}
+          >
             <div className="flex items-center justify-between mb-5 pb-4 border-b-[3px] border-background">
-              <h3 className="font-display text-xl" style={{ color: 'hsl(202 100% 65%)' }}>UI</h3>
+              <h3 className="font-display text-xl text-secondary">UI</h3>
               <span className="tag-chip tag-chip-secondary">STYLING</span>
             </div>
             <div className="space-y-4 mb-7">
               {uiSkills.map((skill, index) => (
-                <SkillBar key={skill.name} name={skill.name} level={skill.level} delay={index * 0.06} />
+                <SkillBar
+                  key={skill.name}
+                  name={skill.name}
+                  level={skill.level}
+                  delay={index * 60}
+                  visible={isVisible}
+                />
               ))}
             </div>
 
@@ -137,8 +145,8 @@ export default function SkillsSection() {
                 {softSkills.map((skill, index) => (
                   <span
                     key={skill}
-                    className={`tag-chip border-background bg-transparent text-background hover:bg-background hover:text-foreground transition-colors cursor-default reveal-scale${visible ? " in-view" : ""}`}
-                    style={{ "--d": `${0.3 + index * 0.05}s` } as React.CSSProperties}
+                    className={`tag-chip border-background bg-transparent text-background hover:bg-background hover:text-foreground transition-colors cursor-default reveal${isVisible ? " is-visible" : ""}`}
+                    style={{ transitionDelay: `${400 + index * 50}ms` }}
                   >
                     {skill}
                   </span>
@@ -148,14 +156,23 @@ export default function SkillsSection() {
           </div>
 
           {/* Tools & Languages */}
-          <div className={`bold-card p-6 sm:p-7 reveal-up${visible ? " in-view" : ""}`} style={{ "--d": "0.26s" } as React.CSSProperties}>
+          <div
+            className={`bold-card p-6 sm:p-7 reveal${isVisible ? " is-visible" : ""}`}
+            style={{ transitionDelay: "300ms" }}
+          >
             <div className="flex items-center justify-between mb-5 pb-4 border-b-[3px] border-foreground">
               <h3 className="font-display text-xl">TOOLS</h3>
               <span className="tag-chip tag-chip-surface">BACKEND</span>
             </div>
             <div className="space-y-4 mb-7">
               {toolsSkills.map((skill, index) => (
-                <SkillBar key={skill.name} name={skill.name} level={skill.level} delay={index * 0.06} />
+                <SkillBar
+                  key={skill.name}
+                  name={skill.name}
+                  level={skill.level}
+                  delay={index * 60}
+                  visible={isVisible}
+                />
               ))}
             </div>
 
@@ -165,16 +182,23 @@ export default function SkillsSection() {
               </h4>
               <div className="space-y-3">
                 {[
-                  { lang: "Arabic", level: "NATIVE", width: 100, bg: "hsl(var(--primary))" },
-                  { lang: "English", level: "B2 UPPER-INT", width: 70, bg: "hsl(var(--secondary))" },
-                ].map(({ lang, level, width, bg }) => (
+                  { lang: "Arabic", level: "NATIVE", width: 100 },
+                  { lang: "English", level: "B2 UPPER-INT", width: 70 },
+                ].map(({ lang, level, width }) => (
                   <div key={lang}>
                     <div className="flex justify-between gap-3 mb-1.5 items-center">
                       <span className="font-black uppercase tracking-wider text-sm">{lang}</span>
                       <span className="font-mono text-xs font-bold text-primary shrink-0">{level}</span>
                     </div>
                     <div className="skill-bar">
-                      <SkillBar name="" level={width} delay={0.5} />
+                      <div
+                        className="skill-bar-fill skill-fill"
+                        style={{
+                          width: isVisible ? `${width}%` : 0,
+                          transitionDelay: "500ms",
+                          background: "hsl(var(--secondary))",
+                        }}
+                      />
                     </div>
                   </div>
                 ))}

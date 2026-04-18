@@ -157,6 +157,43 @@ section[id] {
   .animate-word        { display: inline-block; animation: wordReveal 0.7s cubic-bezier(0.22,1,0.36,1) both; }
   .animate-marquee     { animation: marquee 30s linear infinite; }
 
+  /* ── Reveal-on-scroll (paired with useIntersect) ───── */
+  .reveal {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+    transition: opacity 0.55s cubic-bezier(0.22,1,0.36,1), transform 0.55s cubic-bezier(0.22,1,0.36,1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  .reveal-x {
+    opacity: 0;
+    transform: translate3d(-24px, 0, 0);
+    transition: opacity 0.55s cubic-bezier(0.22,1,0.36,1), transform 0.55s cubic-bezier(0.22,1,0.36,1);
+    will-change: opacity, transform;
+  }
+  .reveal-x.is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  .reveal-x-right {
+    opacity: 0;
+    transform: translate3d(24px, 0, 0);
+    transition: opacity 0.55s cubic-bezier(0.22,1,0.36,1), transform 0.55s cubic-bezier(0.22,1,0.36,1);
+    will-change: opacity, transform;
+  }
+  .reveal-x-right.is-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  .skill-fill {
+    width: 0;
+    transition: width 1s cubic-bezier(0.22,1,0.36,1);
+    will-change: width;
+  }
+
   /* ── Scroll-reveal classes (toggled with .in-view via IntersectionObserver) ── */
   /* Start hidden */
   .reveal-up, .reveal-fade, .reveal-scale, .reveal-left, .reveal-right {
@@ -320,63 +357,4 @@ section[id] {
     background-size: 22px 22px;
   }
 
-  .bg-stripes {
-    background-image: repeating-linear-gradient(
-      45deg,
-      hsl(var(--foreground)) 0,
-      hsl(var(--foreground)) 4px,
-      transparent 4px,
-      transparent 14px
-    );
-  }
-
-  .shadow-bold {
-    box-shadow: var(--shadow-sharp);
-  }
-  .shadow-bold-lg {
-    box-shadow: var(--shadow-sharp-lg);
-  }
-  .shadow-bold-primary {
-    box-shadow: var(--shadow-sharp-primary);
-  }
-  .shadow-bold-secondary {
-    box-shadow: var(--shadow-sharp-secondary);
-  }
-
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-  }
-  ::-webkit-scrollbar-track {
-    background: hsl(var(--background));
-    border-left: 2px solid hsl(var(--foreground));
-  }
-  ::-webkit-scrollbar-thumb {
-    background: hsl(var(--primary));
-    border: 2px solid hsl(var(--foreground));
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--secondary));
-  }
-
-  /* Scroll progress bar */
-  .scroll-progress {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    height: 6px;
-    background: hsl(var(--primary));
-    border-bottom: 2px solid hsl(var(--foreground));
-    transform-origin: left;
-    z-index: 9999;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
-}
+  .bg-

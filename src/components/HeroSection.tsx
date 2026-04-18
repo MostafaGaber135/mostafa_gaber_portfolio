@@ -207,7 +207,7 @@ export default function HeroSection() {
               {["React", "Next.js", "TypeScript", "Tailwind", "Node", "Supabase", "Figma", "Git"].map((w) => (
                 <span key={`${r}-${w}`} className="px-6 flex items-center gap-6">
                   {w}
-                  <span className="w-2 h-2 bg-primary" />
+                  <span className="w-2 h-2 bg-primary" aria-hidden="true" />
                 </span>
               ))}
             </div>

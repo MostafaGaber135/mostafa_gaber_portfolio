@@ -11,16 +11,16 @@ export default function Footer() {
       <div className="container mx-auto px-4 md:px-8 py-16 md:py-20">
         <div className="grid md:grid-cols-[1fr_auto] gap-10 items-end">
           <div>
-            <p className="font-mono text-xs uppercase tracking-[0.3em] mb-4" style={{ color: 'hsl(202 100% 65%)' }}>
+            <p className="font-mono text-xs uppercase tracking-[0.3em] text-secondary mb-4">
               // LET&apos;S BUILD
             </p>
             <h2 className="font-display text-5xl sm:text-6xl md:text-7xl leading-none mb-6">
-              GOT A <span style={{ color: 'hsl(202 100% 65%)' }}>BOLD</span> <br />
+              GOT A <span className="text-secondary">BOLD</span> <br />
               IDEA?
             </h2>
             <a
               href="mailto:mostafagaber1234560@gmail.com"
-              className="inline-flex items-center gap-3 font-display text-2xl sm:text-3xl underline underline-offset-[8px] decoration-[4px] decoration-primary hover:decoration-secondary transition-colors break-all"
+              className="inline-flex items-center gap-3 font-display text-2xl sm:text-3xl underline underline-offset-[8px] decoration-[4px] decoration-secondary hover:decoration-primary transition-colors break-all"
             >
               mostafagaber1234560@gmail.com
             </a>
@@ -43,7 +43,7 @@ export default function Footer() {
       {/* Meta row */}
       <div className="border-t-[3px] border-background/20">
         <div className="container mx-auto px-4 md:px-8 py-6 grid gap-4 md:grid-cols-3 md:items-center">
-          <p className="font-mono text-xs uppercase tracking-wider text-background/70">
+          <p className="font-mono text-xs uppercase tracking-wider text-background/80">
             © {currentYear} MOSTAFA GABER AHMED · EGYPT
           </p>
 
@@ -56,7 +56,7 @@ export default function Footer() {
               <a
                 key={l.href}
                 href={l.href}
-                className="font-display text-xs uppercase tracking-wider hover:text-primary transition-colors"
+                className="font-display text-xs uppercase tracking-wider hover:text-secondary transition-colors"
               >
                 {l.label}
               </a>

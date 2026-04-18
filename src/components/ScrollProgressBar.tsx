@@ -5,8 +5,8 @@ export default function ScrollProgressBar() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Hide during loading screen
-    const t = setTimeout(() => setVisible(true), 2600);
+    // Hide during loading screen (now much shorter — see LoadingScreen)
+    const t = setTimeout(() => setVisible(true), 800);
     return () => clearTimeout(t);
   }, []);
 

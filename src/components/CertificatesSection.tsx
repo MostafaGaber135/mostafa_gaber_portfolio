@@ -1,5 +1,5 @@
-import { useRef, useEffect, useState } from "react";
 import { Award, Calendar } from "lucide-react";
+import { useIntersect } from "@/hooks/use-intersect";
 
 const certificates = [
   {
@@ -35,26 +35,18 @@ const accentClasses: Record<string, string> = {
 };
 
 export default function CertificatesSection() {
-  const ref = useRef<HTMLElement | null>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { rootMargin: "-80px", threshold: 0.05 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
+  const [ref, isVisible] = useIntersect({ rootMargin: "-100px" });
 
   return (
-    <section id="certificates" className="section-padding bg-muted border-y-[3px] border-foreground relative overflow-hidden" ref={ref}>
+    <section
+      id="certificates"
+      ref={ref as React.RefObject<HTMLElement>}
+      className="section-padding bg-muted border-y-[3px] border-foreground relative overflow-hidden"
+    >
       <div className="absolute inset-0 bg-dots-bold opacity-50 pointer-events-none" aria-hidden="true" />
 
       <div className="container mx-auto px-4 sm:px-6 md:px-8 relative">
-        <div className={`mb-12 sm:mb-16 reveal-up${visible ? " in-view" : ""}`}>
+        <div className={`mb-12 sm:mb-16 reveal${isVisible ? " is-visible" : ""}`}>
           <span className="eyebrow bg-secondary text-secondary-foreground">
             <span className="font-mono">05 //</span> Receipts
           </span>
@@ -71,8 +63,8 @@ export default function CertificatesSection() {
           {certificates.map((cert, index) => (
             <div
               key={cert.title}
-              className={`group h-full reveal-up${visible ? " in-view" : ""}`}
-              style={{ "--d": `${index * 0.1}s` } as React.CSSProperties}
+              className={`group h-full reveal${isVisible ? " is-visible" : ""}`}
+              style={{ transitionDelay: `${index * 100}ms` }}
             >
               <div className="bold-card bold-card-hover h-full flex flex-col overflow-hidden">
                 {/* Accent header */}

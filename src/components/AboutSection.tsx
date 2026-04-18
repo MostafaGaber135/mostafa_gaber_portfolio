@@ -1,24 +1,9 @@
-import { useRef, useEffect, useState } from "react";
 import { Award, Briefcase, GraduationCap, MapPin, Code2 } from "lucide-react";
-
-function useReveal(rootMargin = "-80px") {
-  const ref = useRef<HTMLElement | null>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { rootMargin, threshold: 0.1 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [rootMargin]);
-  return [ref, visible] as const;
-}
+import { useIntersect } from "@/hooks/use-intersect";
 
 export default function AboutSection() {
-  const [ref, visible] = useReveal("-80px");
+  const [ref, isVisible] = useIntersect({ rootMargin: "-100px" });
+  const v = isVisible ? " is-visible" : "";
 
   return (
     <section
@@ -30,8 +15,7 @@ export default function AboutSection() {
 
       <div className="container mx-auto px-4 sm:px-6 md:px-8 relative">
         <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className={`mb-12 sm:mb-16 reveal-up${visible ? " in-view" : ""}`}>
+          <div className={`mb-12 sm:mb-16 reveal${v}`}>
             <span className="eyebrow bg-primary text-primary-foreground border-foreground">
               <span className="font-mono">01 //</span> About
             </span>
@@ -43,9 +27,9 @@ export default function AboutSection() {
 
           <div className="grid lg:grid-cols-[1.2fr_1fr] gap-8 lg:gap-14 items-start">
             {/* Bio */}
-            <div className={`space-y-6 reveal-up${visible ? " in-view" : ""}`} style={{ "--d": "0.1s" } as React.CSSProperties}>
+            <div className={`space-y-6 reveal${v}`} style={{ transitionDelay: "140ms" }}>
               <div className="bold-card p-6 sm:p-8 bg-foreground text-background">
-                <p className="font-mono text-xs uppercase tracking-[0.3em] mb-3" style={{ color: 'hsl(202 100% 65%)' }}>// THE STORY</p>
+                <p className="font-mono text-xs uppercase tracking-[0.3em] text-secondary mb-3">// THE STORY</p>
                 <p className="text-lg sm:text-xl leading-relaxed font-medium">
                   Frontend developer obsessed with building <span className="bg-primary text-primary-foreground px-1.5 font-black">responsive</span>,{" "}
                   well-structured web applications. I write{" "}
@@ -84,9 +68,9 @@ export default function AboutSection() {
             </div>
 
             {/* Cards stack */}
-            <div className="space-y-5">
+            <div className={`space-y-5 reveal${v}`} style={{ transitionDelay: "280ms" }}>
               {/* Education */}
-              <div className={`bold-card bold-card-hover p-5 sm:p-6 reveal-up${visible ? " in-view" : ""}`} style={{ "--d": "0.15s" } as React.CSSProperties}>
+              <div className="bold-card bold-card-hover p-5 sm:p-6">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-primary text-primary-foreground border-[3px] border-foreground shrink-0">
                     <GraduationCap className="w-6 h-6" aria-hidden="true" />
@@ -106,7 +90,7 @@ export default function AboutSection() {
               </div>
 
               {/* Graduation Project */}
-              <div className={`bold-card bold-card-hover p-5 sm:p-6 reveal-up${visible ? " in-view" : ""}`} style={{ "--d": "0.22s" } as React.CSSProperties}>
+              <div className="bold-card bold-card-hover p-5 sm:p-6">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-secondary text-secondary-foreground border-[3px] border-foreground shrink-0">
                     <Award className="w-6 h-6" aria-hidden="true" />
@@ -122,7 +106,7 @@ export default function AboutSection() {
               </div>
 
               {/* Current Role */}
-              <div className={`bold-card bold-card-hover p-5 sm:p-6 bg-foreground text-background reveal-up${visible ? " in-view" : ""}`} style={{ "--d": "0.3s" } as React.CSSProperties}>
+              <div className="bold-card bold-card-hover p-5 sm:p-6 bg-foreground text-background">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-primary text-primary-foreground border-[3px] border-background shrink-0">
                     <Code2 className="w-6 h-6" aria-hidden="true" />
@@ -135,7 +119,7 @@ export default function AboutSection() {
                         LIVE
                       </span>
                     </div>
-                    <h3 className="font-display text-lg sm:text-xl mt-0.5 leading-tight" style={{ color: 'hsl(202 100% 65%)' }}>
+                    <h3 className="font-display text-lg sm:text-xl mt-0.5 leading-tight text-secondary">
                       FRONTEND @ PENTAVALUE
                     </h3>
                     <p className="text-sm font-bold mt-1">Full-Time · Apr 2026 – Present</p>

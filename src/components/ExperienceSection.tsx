@@ -1,5 +1,5 @@
-import { useRef, useEffect, useState } from "react";
 import { Briefcase, Calendar, ExternalLink, MapPin } from "lucide-react";
+import { useIntersect } from "@/hooks/use-intersect";
 
 const experiences = [
   {
@@ -78,26 +78,15 @@ function ExperienceCard({
   exp: (typeof experiences)[0];
   index: number;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { rootMargin: "-40px", threshold: 0.05 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
+  const [ref, isVisible] = useIntersect({ rootMargin: "-60px" });
 
   const accent = exp.current ? "bg-secondary text-secondary-foreground" : "bg-primary text-primary-foreground";
 
   return (
     <div
-      ref={ref}
-      className={`grid md:grid-cols-[140px_1fr] gap-4 md:gap-8 mb-6 reveal-up${visible ? " in-view" : ""}`}
-      style={{ "--d": `${index * 0.08}s` } as React.CSSProperties}
+      ref={ref as React.RefObject<HTMLDivElement>}
+      className={`grid md:grid-cols-[140px_1fr] gap-4 md:gap-8 mb-6 reveal${isVisible ? " is-visible" : ""}`}
+      style={{ transitionDelay: `${index * 80}ms` }}
     >
       {/* Index + period */}
       <div className="flex md:flex-col gap-3 md:gap-2 items-center md:items-start md:pt-1">
@@ -112,6 +101,7 @@ function ExperienceCard({
 
       {/* Card */}
       <div className="bold-card bold-card-hover p-5 sm:p-7">
+        {/* Header */}
         <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
           <div>
             <div className="flex flex-wrap gap-2 mb-2">
@@ -135,6 +125,7 @@ function ExperienceCard({
 
         <p className="text-sm sm:text-base font-medium leading-relaxed mt-3">{exp.description}</p>
 
+        {/* Bullets */}
         <ul className="mt-4 space-y-2">
           {exp.bullets.map((b) => (
             <li key={b} className="flex items-start gap-3 text-sm font-medium leading-relaxed">
@@ -144,6 +135,7 @@ function ExperienceCard({
           ))}
         </ul>
 
+        {/* Tech tags */}
         <div className="flex flex-wrap gap-1.5 mt-5 pt-4 border-t-[2px] border-foreground">
           {exp.technologies.map((tech) => (
             <span key={tech} className="tag-chip">{tech}</span>
@@ -167,27 +159,20 @@ function ExperienceCard({
 }
 
 export default function ExperienceSection() {
-  const ref = useRef<HTMLElement | null>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { rootMargin: "-80px", threshold: 0.05 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
+  const [ref, isVisible] = useIntersect({ rootMargin: "-100px" });
 
   return (
-    <section id="experience" className="section-padding bg-muted border-y-[3px] border-foreground relative overflow-hidden" ref={ref}>
+    <section
+      id="experience"
+      ref={ref as React.RefObject<HTMLElement>}
+      className="section-padding bg-muted border-y-[3px] border-foreground relative overflow-hidden"
+    >
       <div className="absolute inset-0 bg-grid-bold opacity-30 pointer-events-none" aria-hidden="true" />
 
       <div className="container mx-auto px-4 sm:px-6 md:px-8 relative">
-        <div className={`mb-12 sm:mb-16 reveal-up${visible ? " in-view" : ""}`}>
+        <div className={`mb-12 sm:mb-16 reveal${isVisible ? " is-visible" : ""}`}>
           <span className="eyebrow bg-foreground text-background border-foreground">
-            <span className="font-mono" style={{ color: 'hsl(202 100% 65%)' }}>03 //</span> Track Record
+            <span className="font-mono text-secondary">03 //</span> Track Record
           </span>
           <h2 className="font-display text-super mt-4">
             WHERE I&apos;VE <br />
@@ -204,7 +189,10 @@ export default function ExperienceSection() {
           ))}
 
           {/* Activities */}
-          <div className={`mt-12 pt-10 border-t-[3px] border-foreground reveal-up${visible ? " in-view" : ""}`} style={{ "--d": "0.4s" } as React.CSSProperties}>
+          <div
+            className={`mt-12 pt-10 border-t-[3px] border-foreground reveal${isVisible ? " is-visible" : ""}`}
+            style={{ transitionDelay: "400ms" }}
+          >
             <h3 className="font-display text-2xl sm:text-3xl mb-5">
               EXTRACURRICULAR.
             </h3>

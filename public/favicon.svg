@@ -3,7 +3,7 @@
   <rect x="8" y="8" width="54" height="54" fill="#111111"/>
 
   <!-- Primary blue block with thick black border -->
-  <rect x="2" y="2" width="54" height="54" fill="#0077BC" stroke="#111111" stroke-width="4"/>
+  <rect x="2" y="2" width="54" height="54" fill="#0070B3" stroke="#111111" stroke-width="4"/>
 
   <!-- Bold blocky M -->
   <g fill="#FFFFFF">
@@ -22,5 +22,5 @@
   </g>
 
   <!-- Green accent square bottom-right -->
-  <rect x="42" y="40" width="10" height="10" fill="#009866" stroke="#111111" stroke-width="3"/>
+  <rect x="42" y="40" width="10" height="10" fill="#008A5B" stroke="#111111" stroke-width="3"/>
 </svg>
