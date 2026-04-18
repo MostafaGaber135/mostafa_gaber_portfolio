@@ -1,5 +1,4 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Award, Calendar } from "lucide-react";
 
 const certificates = [
@@ -37,19 +36,25 @@ const accentClasses: Record<string, string> = {
 
 export default function CertificatesSection() {
   const ref = useRef<HTMLElement | null>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { rootMargin: "-80px", threshold: 0.05 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   return (
     <section id="certificates" className="section-padding bg-muted border-y-[3px] border-foreground relative overflow-hidden" ref={ref}>
       <div className="absolute inset-0 bg-dots-bold opacity-50 pointer-events-none" aria-hidden="true" />
 
       <div className="container mx-auto px-4 sm:px-6 md:px-8 relative">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="mb-12 sm:mb-16"
-        >
+        <div className={`mb-12 sm:mb-16 reveal-up${visible ? " in-view" : ""}`}>
           <span className="eyebrow bg-secondary text-secondary-foreground">
             <span className="font-mono">05 //</span> Receipts
           </span>
@@ -60,16 +65,14 @@ export default function CertificatesSection() {
           <p className="text-base sm:text-lg font-medium mt-4 max-w-2xl">
             Verified credentials backing my technical skills and continuous learning.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 max-w-6xl">
           {certificates.map((cert, index) => (
-            <motion.div
+            <div
               key={cert.title}
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.55, delay: index * 0.1 }}
-              className="group h-full"
+              className={`group h-full reveal-up${visible ? " in-view" : ""}`}
+              style={{ "--d": `${index * 0.1}s` } as React.CSSProperties}
             >
               <div className="bold-card bold-card-hover h-full flex flex-col overflow-hidden">
                 {/* Accent header */}
@@ -101,7 +104,7 @@ export default function CertificatesSection() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

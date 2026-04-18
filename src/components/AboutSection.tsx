@@ -1,33 +1,37 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Award, Briefcase, GraduationCap, MapPin, Code2 } from "lucide-react";
 
-export default function AboutSection() {
+function useReveal(rootMargin = "-80px") {
   const ref = useRef<HTMLElement | null>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { rootMargin, threshold: 0.1 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [rootMargin]);
+  return [ref, visible] as const;
+}
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.14 } },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.55 } },
-  };
+export default function AboutSection() {
+  const [ref, visible] = useReveal("-80px");
 
   return (
-    <section id="about" className="section-padding bg-muted border-y-[3px] border-foreground relative overflow-hidden" ref={ref}>
+    <section
+      id="about"
+      ref={ref as React.RefObject<HTMLElement>}
+      className="section-padding bg-muted border-y-[3px] border-foreground relative overflow-hidden"
+    >
       <div className="absolute inset-0 bg-dots-bold opacity-50 pointer-events-none" aria-hidden="true" />
 
       <div className="container mx-auto px-4 sm:px-6 md:px-8 relative">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="max-w-6xl mx-auto"
-        >
-          <motion.div variants={itemVariants} className="mb-12 sm:mb-16">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className={`mb-12 sm:mb-16 reveal-up${visible ? " in-view" : ""}`}>
             <span className="eyebrow bg-primary text-primary-foreground border-foreground">
               <span className="font-mono">01 //</span> About
             </span>
@@ -35,11 +39,11 @@ export default function AboutSection() {
               I MAKE PIXELS <br />
               <span className="text-stroke">BEHAVE.</span>
             </h2>
-          </motion.div>
+          </div>
 
           <div className="grid lg:grid-cols-[1.2fr_1fr] gap-8 lg:gap-14 items-start">
             {/* Bio */}
-            <motion.div variants={itemVariants} className="space-y-6">
+            <div className={`space-y-6 reveal-up${visible ? " in-view" : ""}`} style={{ "--d": "0.1s" } as React.CSSProperties}>
               <div className="bold-card p-6 sm:p-8 bg-foreground text-background">
                 <p className="font-mono text-xs uppercase tracking-[0.3em] mb-3" style={{ color: 'hsl(202 100% 65%)' }}>// THE STORY</p>
                 <p className="text-lg sm:text-xl leading-relaxed font-medium">
@@ -77,12 +81,12 @@ export default function AboutSection() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             {/* Cards stack */}
-            <motion.div variants={itemVariants} className="space-y-5">
+            <div className="space-y-5">
               {/* Education */}
-              <div className="bold-card bold-card-hover p-5 sm:p-6">
+              <div className={`bold-card bold-card-hover p-5 sm:p-6 reveal-up${visible ? " in-view" : ""}`} style={{ "--d": "0.15s" } as React.CSSProperties}>
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-primary text-primary-foreground border-[3px] border-foreground shrink-0">
                     <GraduationCap className="w-6 h-6" aria-hidden="true" />
@@ -102,7 +106,7 @@ export default function AboutSection() {
               </div>
 
               {/* Graduation Project */}
-              <div className="bold-card bold-card-hover p-5 sm:p-6">
+              <div className={`bold-card bold-card-hover p-5 sm:p-6 reveal-up${visible ? " in-view" : ""}`} style={{ "--d": "0.22s" } as React.CSSProperties}>
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-secondary text-secondary-foreground border-[3px] border-foreground shrink-0">
                     <Award className="w-6 h-6" aria-hidden="true" />
@@ -118,7 +122,7 @@ export default function AboutSection() {
               </div>
 
               {/* Current Role */}
-              <div className="bold-card bold-card-hover p-5 sm:p-6 bg-foreground text-background">
+              <div className={`bold-card bold-card-hover p-5 sm:p-6 bg-foreground text-background reveal-up${visible ? " in-view" : ""}`} style={{ "--d": "0.3s" } as React.CSSProperties}>
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-primary text-primary-foreground border-[3px] border-background shrink-0">
                     <Code2 className="w-6 h-6" aria-hidden="true" />
@@ -131,16 +135,16 @@ export default function AboutSection() {
                         LIVE
                       </span>
                     </div>
-                    <h3 className="font-display text-lg sm:text-xl mt-0.5 leading-tight text-primary">
+                    <h3 className="font-display text-lg sm:text-xl mt-0.5 leading-tight" style={{ color: 'hsl(202 100% 65%)' }}>
                       FRONTEND @ PENTAVALUE
                     </h3>
                     <p className="text-sm font-bold mt-1">Full-Time · Apr 2026 – Present</p>
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

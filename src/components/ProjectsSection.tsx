@@ -1,5 +1,4 @@
-import { motion, useInView, AnimatePresence } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Github, ExternalLink, X, ArrowUpRight } from "lucide-react";
 import { Button } from "./ui/button";
 
@@ -60,15 +59,23 @@ function ProjectCard({
   onClick: () => void;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const isInView = useInView(ref, { once: true, margin: "-60px" });
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { rootMargin: "-40px", threshold: 0.05 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial={{ opacity: 0, y: 60 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-      className="group cursor-pointer h-full"
+      className={`group cursor-pointer h-full reveal-up${visible ? " in-view" : ""}`}
+      style={{ "--d": `${index * 0.1}s` } as React.CSSProperties}
       onClick={onClick}
     >
       <div className="bold-card bold-card-hover overflow-hidden h-full flex flex-col">
@@ -105,7 +112,6 @@ function ProjectCard({
 
           <p className="text-sm font-medium leading-relaxed mt-3 line-clamp-2 flex-1">{project.description}</p>
 
-          {/* Highlights */}
           <ul className="flex flex-col gap-1.5 mt-4">
             {project.highlights.map((h) => (
               <li key={h} className="flex items-start gap-2 text-xs font-bold">
@@ -115,7 +121,6 @@ function ProjectCard({
             ))}
           </ul>
 
-          {/* Tech tags */}
           <div className="flex flex-wrap gap-1.5 mt-4">
             {project.technologies.slice(0, 3).map((tech) => (
               <span key={tech} className="tag-chip">{tech}</span>
@@ -125,7 +130,6 @@ function ProjectCard({
             )}
           </div>
 
-          {/* Links */}
           <div className="flex gap-4 items-center mt-5 pt-4 border-t-[3px] border-foreground">
             <a
               href={project.github}
@@ -155,7 +159,7 @@ function ProjectCard({
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -167,23 +171,18 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
   }, [onClose]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/80 backdrop-blur-sm"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="project-modal-title"
+      style={{ animation: "fadeIn 0.2s ease both" }}
     >
-      <motion.div
-        initial={{ scale: 0.88, opacity: 0, y: 30 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.88, opacity: 0, y: 30 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
+      <div
         className="bold-card bg-background max-w-2xl w-full max-h-[90vh] overflow-auto"
         onClick={(e) => e.stopPropagation()}
+        style={{ animation: "scaleIn 0.25s cubic-bezier(0.22,1,0.36,1) both" }}
       >
         <div className={`relative ${accentClasses[project.accent]} border-b-[3px] border-foreground`}>
           <img
@@ -258,25 +257,31 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
             )}
           </div>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }
 
 export default function ProjectsSection() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const ref = useRef<HTMLElement | null>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { rootMargin: "-80px", threshold: 0.05 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   return (
     <section id="projects" className="section-padding" ref={ref}>
       <div className="container mx-auto px-4 sm:px-6 md:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 sm:mb-16"
-        >
+        <div className={`flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 sm:mb-16 reveal-up${visible ? " in-view" : ""}`}>
           <div>
             <span className="eyebrow bg-primary text-primary-foreground">
               <span className="font-mono">04 //</span> Selected Work
@@ -289,7 +294,7 @@ export default function ProjectsSection() {
           <p className="text-base sm:text-lg font-medium max-w-md">
             Real-world applications built with modern technologies, obsessive attention to detail, and a bias for shipping.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 max-w-6xl mx-auto">
           {projects.map((project, index) => (
@@ -302,26 +307,20 @@ export default function ProjectsSection() {
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ delay: 0.8 }}
-          className="text-center mt-14"
-        >
+        <div className={`text-center mt-14 reveal-fade${visible ? " in-view" : ""}`} style={{ "--d": "0.8s" } as React.CSSProperties}>
           <Button variant="surface" size="lg" asChild>
             <a href="https://github.com/MostafaGaber135" target="_blank" rel="noopener noreferrer">
               <Github className="w-5 h-5 mr-2" />
               See everything on GitHub
             </a>
           </Button>
-        </motion.div>
+        </div>
       </div>
 
-      <AnimatePresence>
-        {selectedProject && (
-          <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
-        )}
-      </AnimatePresence>
+      {/* Modal */}
+      {selectedProject && (
+        <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+      )}
     </section>
   );
 }

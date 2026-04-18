@@ -1,5 +1,4 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 
 const coreSkills = [
   { name: "JavaScript (ES6+)", level: 92 },
@@ -38,9 +37,35 @@ const softSkills = [
   "Adaptability",
 ];
 
+function useReveal(rootMargin = "-60px") {
+  const ref = useRef<HTMLElement | null>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { rootMargin, threshold: 0.05 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [rootMargin]);
+  return [ref, visible] as const;
+}
+
 function SkillBar({ name, level, delay }: { name: string; level: number; delay: number }) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const isInView = useInView(ref, { once: true, margin: "-40px" });
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { rootMargin: "-20px", threshold: 0.1 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   return (
     <div ref={ref} className="space-y-2">
@@ -49,11 +74,9 @@ function SkillBar({ name, level, delay }: { name: string; level: number; delay: 
         <span className="font-mono text-xs font-bold shrink-0">{level}%</span>
       </div>
       <div className="skill-bar">
-        <motion.div
-          className="skill-bar-fill"
-          initial={{ width: 0 }}
-          animate={isInView ? { width: `${level}%` } : { width: 0 }}
-          transition={{ duration: 1.1, delay, ease: "easeOut" }}
+        <div
+          className={`skill-bar-fill${visible ? " animate-fill" : ""}`}
+          style={{ "--skill-w": `${level}%`, "--d": `${delay}s` } as React.CSSProperties}
         />
       </div>
     </div>
@@ -61,28 +84,13 @@ function SkillBar({ name, level, delay }: { name: string; level: number; delay: 
 }
 
 export default function SkillsSection() {
-  const ref = useRef<HTMLElement | null>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.55 } },
-  };
+  const [ref, visible] = useReveal("-80px");
 
   return (
-    <section id="skills" className="section-padding relative overflow-hidden" ref={ref}>
+    <section id="skills" className="section-padding relative overflow-hidden" ref={ref as React.RefObject<HTMLElement>}>
       <div className="container mx-auto px-4 sm:px-6 md:px-8 relative">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="mb-12 sm:mb-16"
-        >
+        {/* Header */}
+        <div className={`mb-12 sm:mb-16 reveal-up${visible ? " in-view" : ""}`}>
           <span className="eyebrow bg-secondary text-secondary-foreground">
             <span className="font-mono">02 //</span> Arsenal
           </span>
@@ -93,16 +101,11 @@ export default function SkillsSection() {
           <p className="text-base sm:text-lg font-medium mt-4 max-w-2xl">
             A focused, production-ready stack for building modern web applications.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 max-w-6xl mx-auto"
-        >
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 max-w-6xl mx-auto">
           {/* Core & Frameworks */}
-          <motion.div variants={itemVariants} className="bold-card p-6 sm:p-7">
+          <div className={`bold-card p-6 sm:p-7 reveal-up${visible ? " in-view" : ""}`} style={{ "--d": "0.1s" } as React.CSSProperties}>
             <div className="flex items-center justify-between mb-5 pb-4 border-b-[3px] border-foreground">
               <h3 className="font-display text-xl">CORE</h3>
               <span className="tag-chip tag-chip-primary">FRAMEWORKS</span>
@@ -112,12 +115,12 @@ export default function SkillsSection() {
                 <SkillBar key={skill.name} name={skill.name} level={skill.level} delay={index * 0.06} />
               ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* UI & Styling + Soft */}
-          <motion.div variants={itemVariants} className="bold-card p-6 sm:p-7 bg-foreground text-background">
+          <div className={`bold-card p-6 sm:p-7 bg-foreground text-background reveal-up${visible ? " in-view" : ""}`} style={{ "--d": "0.18s" } as React.CSSProperties}>
             <div className="flex items-center justify-between mb-5 pb-4 border-b-[3px] border-background">
-              <h3 className="font-display text-xl text-primary">UI</h3>
+              <h3 className="font-display text-xl" style={{ color: 'hsl(202 100% 65%)' }}>UI</h3>
               <span className="tag-chip tag-chip-secondary">STYLING</span>
             </div>
             <div className="space-y-4 mb-7">
@@ -132,22 +135,20 @@ export default function SkillsSection() {
               </h4>
               <div className="flex flex-wrap gap-2">
                 {softSkills.map((skill, index) => (
-                  <motion.span
+                  <span
                     key={skill}
-                    className="tag-chip border-background bg-transparent text-background hover:bg-background hover:text-foreground transition-colors cursor-default"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                    transition={{ delay: 0.4 + index * 0.05 }}
+                    className={`tag-chip border-background bg-transparent text-background hover:bg-background hover:text-foreground transition-colors cursor-default reveal-scale${visible ? " in-view" : ""}`}
+                    style={{ "--d": `${0.3 + index * 0.05}s` } as React.CSSProperties}
                   >
                     {skill}
-                  </motion.span>
+                  </span>
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Tools & Languages */}
-          <motion.div variants={itemVariants} className="bold-card p-6 sm:p-7">
+          <div className={`bold-card p-6 sm:p-7 reveal-up${visible ? " in-view" : ""}`} style={{ "--d": "0.26s" } as React.CSSProperties}>
             <div className="flex items-center justify-between mb-5 pb-4 border-b-[3px] border-foreground">
               <h3 className="font-display text-xl">TOOLS</h3>
               <span className="tag-chip tag-chip-surface">BACKEND</span>
@@ -164,29 +165,23 @@ export default function SkillsSection() {
               </h4>
               <div className="space-y-3">
                 {[
-                  { lang: "Arabic", level: "NATIVE", width: 100 },
-                  { lang: "English", level: "B2 UPPER-INT", width: 70 },
-                ].map(({ lang, level, width }) => (
+                  { lang: "Arabic", level: "NATIVE", width: 100, bg: "hsl(var(--primary))" },
+                  { lang: "English", level: "B2 UPPER-INT", width: 70, bg: "hsl(var(--secondary))" },
+                ].map(({ lang, level, width, bg }) => (
                   <div key={lang}>
                     <div className="flex justify-between gap-3 mb-1.5 items-center">
                       <span className="font-black uppercase tracking-wider text-sm">{lang}</span>
                       <span className="font-mono text-xs font-bold text-primary shrink-0">{level}</span>
                     </div>
                     <div className="skill-bar">
-                      <motion.div
-                        className="skill-bar-fill"
-                        initial={{ width: 0 }}
-                        animate={isInView ? { width: `${width}%` } : { width: 0 }}
-                        transition={{ duration: 1.1, delay: 0.5, ease: "easeOut" }}
-                        style={{ background: "hsl(var(--secondary))" }}
-                      />
+                      <SkillBar name="" level={width} delay={0.5} />
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );

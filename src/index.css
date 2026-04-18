@@ -157,6 +157,45 @@ section[id] {
   .animate-word        { display: inline-block; animation: wordReveal 0.7s cubic-bezier(0.22,1,0.36,1) both; }
   .animate-marquee     { animation: marquee 30s linear infinite; }
 
+  /* ── Scroll-reveal classes (toggled with .in-view via IntersectionObserver) ── */
+  /* Start hidden */
+  .reveal-up, .reveal-fade, .reveal-scale, .reveal-left, .reveal-right {
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+  .reveal-up    { transform: translateY(40px); }
+  .reveal-left  { transform: translateX(-30px); }
+  .reveal-right { transform: translateX(30px); }
+  .reveal-scale { transform: scale(0.9); }
+
+  /* Animate in when .in-view added */
+  .reveal-up.in-view, .reveal-fade.in-view, .reveal-scale.in-view,
+  .reveal-left.in-view, .reveal-right.in-view {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1),
+                transform 0.6s cubic-bezier(0.22,1,0.36,1);
+  }
+
+  /* Stagger delays via data attribute */
+  .reveal-up[style*="--d"],
+  .reveal-fade[style*="--d"],
+  .reveal-scale[style*="--d"],
+  .reveal-left[style*="--d"],
+  .reveal-right[style*="--d"] {
+    transition-delay: var(--d, 0s);
+  }
+
+  /* Skill bar CSS animation */
+  @keyframes skillFill {
+    from { width: 0; }
+    to   { width: var(--skill-w, 0%); }
+  }
+  .skill-bar-fill.animate-fill {
+    animation: skillFill 1.1s ease-out both;
+    animation-delay: var(--d, 0s);
+  }
+
   /* High-contrast accessible focus ring */
   :focus-visible {
     outline: 3px solid hsl(var(--primary));
