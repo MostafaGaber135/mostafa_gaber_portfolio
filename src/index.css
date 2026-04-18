@@ -114,50 +114,14 @@ section[id] {
     scroll-behavior: smooth;
   }
 
-  /*
-   * ── Metric-matched fallback fonts ──────────────────────────
-   * Chrome exposes size-adjust / ascent-override / descent-override
-   * which let a *system* font stand in for the downloaded web font
-   * using the web font's metrics. While the real font is loading,
-   * the fallback renders at the same line height, x-height and
-   * advance width the web font will render at — so the post-swap
-   * reflow is effectively zero.
-   *
-   * Calibrated against Archivo (UPM 1000, ascent 989, descent 211)
-   * vs. Arial (Archivo Fallback) and Impact/Arial Black (Black
-   * Fallback). Values derived from the Archivo .woff2 metrics.
-   * This kills the 0.028 CLS Lighthouse was flagging from
-   * .../tDbv2o-fl….woff2 / ….k3kPo8UDI….woff2 swap.
-   */
-  @font-face {
-    font-family: 'Archivo Fallback';
-    src: local('Arial'), local('Helvetica Neue');
-    font-weight: 100 900;
-    font-style: normal;
-    size-adjust: 97%;
-    ascent-override: 91%;
-    descent-override: 22%;
-    line-gap-override: 0%;
-  }
-  @font-face {
-    font-family: 'Archivo Black Fallback';
-    src: local('Impact'), local('Arial Black'), local('Helvetica Neue');
-    font-weight: 900;
-    font-style: normal;
-    size-adjust: 94%;
-    ascent-override: 93%;
-    descent-override: 23%;
-    line-gap-override: 0%;
-  }
-
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Archivo', 'Archivo Fallback', 'Inter', system-ui, sans-serif;
+    font-family: 'Archivo', 'Inter', system-ui, sans-serif;
     font-weight: 500;
   }
 
   h1, h2, h3, h4, h5, h6, .font-display {
-    font-family: 'Archivo Black', 'Archivo Black Fallback', 'Archivo', system-ui, sans-serif;
+    font-family: 'Archivo Black', 'Archivo', system-ui, sans-serif;
     font-weight: 900;
     letter-spacing: -0.03em;
     line-height: 0.95;
