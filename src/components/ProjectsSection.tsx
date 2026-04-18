@@ -136,20 +136,24 @@ function ProjectCard({
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={`View ${project.title} source code on GitHub`}
               className="inline-flex items-center gap-1.5 font-display text-xs uppercase tracking-wider hover:text-primary transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
-              <Github className="w-4 h-4" /> CODE
+              <Github className="w-4 h-4" aria-hidden="true" />
+              <span aria-hidden="true">CODE</span>
             </a>
             {project.live && (
               <a
                 href={project.live}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`View ${project.title} live demo`}
                 className="inline-flex items-center gap-1.5 font-display text-xs uppercase tracking-wider hover:text-primary transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >
-                <ExternalLink className="w-4 h-4" /> LIVE
+                <ExternalLink className="w-4 h-4" aria-hidden="true" />
+                <span aria-hidden="true">LIVE</span>
               </a>
             )}
             <span className="ml-auto font-mono text-[10px] uppercase tracking-wider text-primary group-hover:underline decoration-[3px] underline-offset-4">
