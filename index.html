@@ -1,94 +1,123 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Primary Meta -->
-    <title>MOSTAFA GABER AHMED — BOLD FRONTEND DEVELOPER</title>
-    <meta name="description" content="Frontend Developer specializing in React, Next.js, and TypeScript. Currently at PentaValue — shipping fast, accessible, and unapologetically bold web interfaces." />
-    <meta name="author" content="Mostafa Gaber Ahmed" />
-    <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#0070B3" />
-    <meta name="keywords" content="Frontend Developer, React, Next.js, TypeScript, JavaScript, Web Developer, Mostafa Gaber Ahmed, Portfolio, Egypt, Bold Design" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Open Graph -->
-    <meta property="og:type"        content="website" />
-    <meta property="og:url"         content="https://mostafagaberahmed.site/" />
-    <meta property="og:title"       content="Mostafa Gaber Ahmed — Bold Frontend Developer" />
-    <meta property="og:description" content="Frontend Developer specializing in React, Next.js, and TypeScript. Currently at PentaValue." />
-    <meta property="og:image"       content="https://mostafagaberahmed.site/og-image.png" />
-    <meta property="og:image:width"  content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:locale"      content="en_US" />
-    <meta property="og:site_name"   content="Mostafa Gaber Ahmed" />
+  <!-- Primary Meta -->
+  <title>MOSTAFA GABER AHMED — BOLD FRONTEND DEVELOPER</title>
+  <meta name="description"
+    content="Frontend Developer specializing in React, Next.js, and TypeScript. Currently at PentaValue — shipping fast, accessible, and unapologetically bold web interfaces." />
+  <meta name="author" content="Mostafa Gaber Ahmed" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#0070B3" />
+  <meta name="keywords"
+    content="Frontend Developer, React, Next.js, TypeScript, JavaScript, Web Developer, Mostafa Gaber Ahmed, Portfolio, Egypt, Bold Design" />
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card"        content="summary_large_image" />
-    <meta name="twitter:site"        content="@MostafaGaber" />
-    <meta name="twitter:title"       content="Mostafa Gaber Ahmed — Bold Frontend Developer" />
-    <meta name="twitter:description" content="Frontend Developer specializing in React, Next.js, and TypeScript." />
-    <meta name="twitter:image"       content="https://mostafagaberahmed.site/og-image.png" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mostafagaberahmed.site/" />
+  <meta property="og:title" content="Mostafa Gaber Ahmed — Bold Frontend Developer" />
+  <meta property="og:description"
+    content="Frontend Developer specializing in React, Next.js, and TypeScript. Currently at PentaValue." />
+  <meta property="og:image" content="https://mostafagaberahmed.site/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:site_name" content="Mostafa Gaber Ahmed" />
 
-    <!-- Canonical -->
-    <link rel="canonical" href="https://mostafagaberahmed.site/" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@MostafaGaber" />
+  <meta name="twitter:title" content="Mostafa Gaber Ahmed — Bold Frontend Developer" />
+  <meta name="twitter:description" content="Frontend Developer specializing in React, Next.js, and TypeScript." />
+  <meta name="twitter:image" content="https://mostafagaberahmed.site/og-image.png" />
 
-    <!-- Favicon (versioned to bust browser cache) -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=bold-3" />
-    <link rel="alternate icon" type="image/svg+xml" href="/favicon.svg?v=bold-3" />
+  <!-- Canonical -->
+  <link rel="canonical" href="https://mostafagaberahmed.site/" />
 
-    <!--
+  <!-- Favicon (versioned to bust browser cache) -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=bold-3" />
+  <link rel="alternate icon" type="image/svg+xml" href="/favicon.svg?v=bold-3" />
+
+  <!--
       Theme detection — runs synchronously before any paint.
     -->
-    <script>
-      try {
-        var _t = localStorage.getItem('theme') || 'light';
-        document.documentElement.classList.add(_t);
-      } catch (e) {}
-    </script>
+  <script>
+    try {
+      var _t = localStorage.getItem('theme') || 'light';
+      document.documentElement.classList.add(_t);
+    } catch (e) { }
+  </script>
 
-    <!--
+  <!--
       Minimal splash — prevents FOUC before React mounts, then React's
       LoadingScreen fades + detaches it. A short CSS fallback animation
       hides the splash after 280 ms if, for any reason, React never mounts
       — keeping the hero visible and ensuring it wins LCP quickly.
     -->
-    <style>
-      #splash {
-        position: fixed;
-        inset: 0;
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #FAFAFA;
-        animation: _splash-out .28s ease forwards;
-      }
-      html.dark #splash { background: #0D0D0D; }
-      @keyframes _splash-out {
-        0%, 50% { opacity: 1; visibility: visible; pointer-events: auto; }
-        99%     { opacity: 0; visibility: visible; pointer-events: none; }
-        100%    { opacity: 0; visibility: hidden;  pointer-events: none; }
-      }
-      #_splash-logo {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 88px;
-        height: 88px;
-        background: #0070B3;
-        color: #FFFFFF;
-        border: 4px solid #111111;
-        box-shadow: 8px 8px 0 0 #111111;
-        font-family: 'Archivo Black', system-ui, sans-serif;
-        font-weight: 900;
-        font-size: 2rem;
-        letter-spacing: -0.04em;
-      }
-      html.dark #_splash-logo { border-color: #FFFFFF; box-shadow: 8px 8px 0 0 #FFFFFF; }
-    </style>
+  <style>
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #FAFAFA;
+      animation: _splash-out .28s ease forwards;
+    }
 
-    <!--
+    html.dark #splash {
+      background: #0D0D0D;
+    }
+
+    @keyframes _splash-out {
+
+      0%,
+      50% {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      99% {
+        opacity: 0;
+        visibility: visible;
+        pointer-events: none;
+      }
+
+      100% {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+    }
+
+    #_splash-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 88px;
+      height: 88px;
+      background: #0070B3;
+      color: #FFFFFF;
+      border: 4px solid #111111;
+      box-shadow: 8px 8px 0 0 #111111;
+      font-family: 'Archivo Black', system-ui, sans-serif;
+      font-weight: 900;
+      font-size: 2rem;
+      letter-spacing: -0.04em;
+    }
+
+    html.dark #_splash-logo {
+      border-color: #FFFFFF;
+      box-shadow: 8px 8px 0 0 #FFFFFF;
+    }
+  </style>
+
+  <!--
       Fonts — Archivo Black (display / LCP), Archivo (body), JetBrains Mono.
       ── Loading strategy ───────────────────────────────────────────────────
       • Preconnect to fonts.gstatic.com (origin that serves the actual WOFF2
@@ -101,26 +130,24 @@
       • `display=swap` is on the CSS URL so fallback text paints immediately
         and web fonts swap in without blocking LCP.
     -->
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
-      onload="this.rel='stylesheet'"
-    />
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" />
-    </noscript>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    onload="this.rel='stylesheet'" />
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" />
+  </noscript>
 
-    <!--
+  <!--
       DNS-prefetch only for project images — they live below the fold and
       are lazy-loaded, so a full preconnect (TLS handshake) would be wasted
       on the critical path and Lighthouse flags it as an "unused preconnect".
     -->
-    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+  <link rel="dns-prefetch" href="https://images.unsplash.com" />
 
-    <!-- Structured Data (SEO) -->
-    <script type="application/ld+json">
+  <!-- Structured Data (SEO) -->
+  <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Person",
@@ -148,17 +175,26 @@
       "knowsAbout": ["React", "Next.js", "TypeScript", "JavaScript", "Tailwind CSS", "Frontend Development"]
     }
     </script>
-  </head>
+  <!-- Microsoft Clarity -->
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, "clarity", "script", "whblg8ogdu");
+  </script>
+</head>
 
-  <body>
-    <!--
+<body>
+  <!--
       Static splash — bold block logo with hard shadow.
     -->
-    <div id="splash" role="status" aria-label="Loading">
-      <div id="_splash-logo">MGA</div>
-    </div>
+  <div id="splash" role="status" aria-label="Loading">
+    <div id="_splash-logo">MGA</div>
+  </div>
 
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>
